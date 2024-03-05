@@ -1,0 +1,167 @@
+from django.test import TestCase
+from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+
+from dobscraper.scnjscraper import SCNJScraper
+
+# from arbitrage.scrapers import WalmartScraper, MemberCentralScraper, AmazonScraper, BookFinderScraper
+from proxy.proxies import ProxyUtils, ProxyManager
+
+
+class SCNJScrapeTestCase(TestCase):
+    def setUp(self):
+        """
+        Use Firefox instead of Chrome to address compatibility issue with current drivers installed
+        https://stackoverflow.com/questions/54558321/webdriverexception-message-newsession-with-geckodriver-firefox-v65-and-seleniu
+        :return:
+        """
+        import os
+        from django.conf import settings
+
+        # gecko_path = os.path.join('../jsnetwork_project/static', 'bin', 'geckodriver')
+        # gecko_path = os.path.join('bin', 'geckodriver')
+        gecko_path = os.path.join(str(settings.ROOT_DIR), 'bin', 'geckodriver')
+        self.browser = webdriver.Firefox(executable_path=gecko_path)
+        self.test_judgment_number = 'PD-187487-18'
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def _test_login_scraper(self, scraper):
+        # # @TODO: need to handle bad captcha submissions
+        # # @TODO: need to handle slow page loads by changing proxy address
+        # scraper.load_login_page()
+        # captcha_filename = '2captcha.png'
+        # captcha_image_saved = scraper.save_captcha_img(captcha_filename)
+        # self.assertTrue(captcha_image_saved)
+        # api = CaptchaAPI()
+        # try:
+        #     captcha_result = api.solve_captcha(captcha_filename)
+        # except Exception as e:
+        #     print('An exception occurred while solving the captcha: {}'.format(e.message))
+        # self.assertGreaterEqual(len(captcha_result), 6) # assumes the captcha is 6 characters long
+        # return captcha_result
+        return scraper.login_scraper()
+
+
+class SCNJScrapeProxyTestCase(SCNJScrapeTestCase):
+    def setUp(self):
+        """
+        Use Firefox instead of Chrome to address compatibility issue with current drivers installed
+        https://stackoverflow.com/questions/54558321/webdriverexception-message-newsession-with-geckodriver-firefox-v65-and-seleniu
+        :return:
+        """
+        import os
+        gecko_path = os.path.join('../jsnetwork_project/static', 'bin', 'geckodriver')
+        proxy_manager = ProxyManager()
+        proxy_ip = proxy_manager.get_next_proxy()
+        ProxyUtils.dynamic_ip_change(self.browser, proxy_ip)
+
+    def tearDown(self):
+        self.browser.quit()
+
+
+
+class LoadGoogleTest(SCNJScrapeTestCase):
+    def test_can_load_google(self):
+        self.browser.get('http://google.com')
+        self.assertIn('Google', self.browser.title)
+
+
+class CaptchaBreakTestCase(SCNJScrapeTestCase):
+
+    def test_can_load_login_page(self):
+        """
+        Make sure the login page is available
+        :return:
+        """
+        scraper = SCNJScraper(self.browser)
+        scraper.load_login_page()
+        self.assertIn('JCFC0001', self.browser.page_source)
+
+    def test_can_solve_login_captcha(self):
+        scraper = SCNJScraper(self.browser)
+        self._test_login_scraper(scraper)
+
+
+class CaptchaBreakWithProxyTestCase(SCNJScrapeTestCase):
+
+    def _set_scraper_proxy(self, scraper):
+        proxy_manager = ProxyManager()
+        proxy_ip = proxy_manager.get_next_proxy()
+        ProxyUtils.dynamic_ip_change(scraper.browser, proxy_ip)
+
+    def test_can_solve_login_captcha_with_proxy(self):
+        scraper = SCNJScraper(self.browser)
+        self._test_login_scraper(scraper)
+        self._set_scraper_proxy(scraper)
+
+    def test_can_solve_and_enter_captcha(self):
+        scraper = SCNJScraper(self.browser)
+        self._set_scraper_proxy(scraper)
+        num_tries = 0
+        while num_tries < 3:
+            try:
+                captcha_text = self._test_login_scraper(scraper)
+                scraper.enter_solved_captcha_text(captcha_text)
+                self.assertIn('JCFC0002', scraper.browser.page_source)
+                break
+            except WebDriverException as e:  # WebDriverException:
+                num_tries += 1
+
+    def test_can_solve_after_bad_captcha(self):
+        scraper = SCNJScraper(self.browser)
+        scraper._login_and_solve(scraper)
+        self.assertIn('JCFC0002', scraper.browser.page_source)
+
+    def test_can_nav_to_judgment_search_page(self):
+        scraper = SCNJScraper(self.browser)
+        scraper._login_and_solve(scraper)
+        # tab navigation
+        scraper.navigate_to_judgment_tab()
+        self.assertIn('Judgment Number:', scraper.browser.page_source)
+
+    def test_can_navivate_and_enter_judgment(self):
+        scraper = SCNJScraper(self.browser)
+        scraper._login_and_solve(scraper)
+        # tab navigation
+        scraper.navigate_to_judgment_tab()
+        judgment = SCNJScraper.split_judgment_by_dash(self.test_judgment_number)
+        scraper.enter_judgment_and_search(judgment)
+        self.assertIn('Judgment Record Search Results', scraper.browser.page_source)
+
+    def test_can_captcha_and_navigate_judgment_details(self):
+        scraper = SCNJScraper(self.browser)
+        scraper._login_and_solve(scraper)
+        # tab navigation
+        scraper.navigate_to_judgment_tab()
+        judgment = SCNJScraper.split_judgment_by_dash(self.test_judgment_number)
+        scraper.enter_judgment_and_search(judgment)
+        self.assertIn('Judgment Record Search Results', scraper.browser.page_source)
+        scraper.navigate_to_judgment_details()
+        self.assertIn('Judgment Search Result Details', scraper.browser.page_source)
+        # move to new test for date of birth scrape
+        scraper.click_debtor_link()
+        dob = scraper.scrape_date_of_birth()
+        self.assertIsNotNone(dob)
+
+    def test_can_captcha_and_parse_multiple_judgments(self):
+        scraper = SCNJScraper(self.browser)
+        scraper.login_and_solve(scraper)
+        # tab navigation
+        judgments = ['PD-003072-09','PD-003073-09','PD-003074-09','PD-003075-09','PD-003076-09']
+        judgments = ['PD-003072-09','PD-003073-09','PD-003074-09','PD-003075-09','PD-003076-09','PD-003077-09','PD-003078-09','PD-003079-09','PD-003080-09','PD-003081-09','PD-003082-09','PD-003083-09','PD-003084-09','PD-003085-09','PD-003086-09','PD-003087-09','PD-003088-09','PD-003089-09','PD-003090-09','PD-003091-09','PD-003092-09','PD-003093-09','PD-003094-09','PD-003095-09','PD-003096-09','PD-003097-09','PD-003098-09','PD-003099-09','PD-003100-09','PD-003101-09','PD-003102-09','PD-003103-09','PD-003104-09','PD-003105-09','PD-003106-09','PD-003107-09','PD-003108-09','PD-003109-09','PD-003110-09','PD-003111-09','PD-003112-09','PD-003113-09','PD-003114-09','PD-003115-09','PD-003116-09','PD-003117-09','PD-003118-09','PD-003119-09','PD-003120-09','PD-003121-09','PD-003122-09','PD-003123-09','PD-003124-09','PD-003125-09','PD-003126-09','PD-003127-09','PD-003128-09','PD-003129-09','PD-003130-09','PD-003131-09','PD-003132-09','PD-003133-09','PD-003134-09','PD-003135-09','PD-003136-09','PD-003137-09','PD-003138-09','PD-003139-09','PD-003140-09','PD-003141-09','PD-003142-09','PD-003143-09','PD-003144-09','PD-003145-09','PD-003146-09','PD-003147-09','PD-003148-09','PD-003149-09','PD-003150-09','PD-003151-09','PD-003152-09','PD-003153-09','PD-003154-09','PD-003155-09','PD-003156-09','PD-003157-09','PD-003158-09','PD-003159-09','PD-003160-09','PD-003161-09','PD-003162-09','PD-003163-09','PD-003164-09','PD-003165-09','PD-003166-09','PD-003167-09','PD-003168-09','PD-003169-09','PD-003170-09','PD-003171-09']
+        for i, judg in enumerate(judgments):
+            scraper.navigate_to_judgment_tab()
+            judgment = SCNJScraper.split_judgment_by_dash(judg)
+            scraper.enter_judgment_and_search(judgment)
+            self.assertIn('Judgment Record Search Results', scraper.browser.page_source)
+            scraper.navigate_to_judgment_details()
+            self.assertIn('Judgment Search Result Details', scraper.browser.page_source)
+            # move to new test for date of birth scrape
+            matched_names = scraper.click_debtor_link()
+            # self.assertIsNotNone(dob)
+            # print('DOB number {} scraped'.format(i))
+            if len(matched_names) > 0:
+                matched_name = matched_names[0]
+                print(('DOB data scraped: {} - {}'.format(matched_name.dob, matched_name.debtor_name)))

@@ -1,0 +1,5 @@
+alias start_local='python manage.py runserver --settings=config.settings.local'
+export DJANGO_SETTINGS_MODULE='config.settings.local'
+source /Applications/djangostack-1.11.29-1/use_djangostack
+alias ll='ls -aFl'
+# source ../env/bin/activate

@@ -1,0 +1,39 @@
+from __future__ import print_function
+
+import logging
+import os
+
+from django.core.management.base import BaseCommand
+
+from statereport.elasticsearch_utils import ElasticSearchUtils
+
+class Command(BaseCommand):
+    help = 'runs a party search on a given elasticsearch cluster'
+
+    # def __init__(self):
+    #     self.data_dir = os.path.join(settings.MEDIA_ROOT, settings.EMAIL_DATA_DIR)
+    #     self.logger = logging.getLogger(__name__)
+    #     self.logger.info('Using {} as the data directory'.format(self.data_dir))
+
+    # def add_arguments(self, parser):
+    #     parser.add_argument('num_emails_to_fetch', type=int)
+
+    def _first_names(self):
+        # return ['juan', 'juana', 'JAUN', 'jon']
+        return [u'juan', u'juane', u'juann', u'juean', u'juian', u'juanne', u'juano', u'juans', u'juani', u'jeuan', u'jouan', u'juaan', u'juahn', u'juanito', u'juany', u'juanno', u'juanie', u'juanee', u'juanes', u'juanae', u'john', u'jon', u'jonathan', u'jonatan']
+
+    def _last_names(self):
+        # return ['rodriguez']
+        return [u'rodriguez', u'roddriguez', u"rodr'iguez", u'rodrigguez', u'rodrigueez', u'rodriguezs', u'rodriguezz', u'rodriguiez', u'rodrriguez', u'rrodriguez', u'rodriguezi', u'rodrigueza', u'rodriguea', u'rodriguee', u'rhodriguez', u'rodrigue', u'rodrigoez', u'rodrigues', u'rodriguiz', u'rodriguz', u'rodriguezii', u'rodriguess', u'rodrigueuz', u'rodrigouz', u'rodrigkuez', u'rodriguev', u'rodriguewz', u'rodriguex', u'rodrigueg', u'rodriguel', u'rodrigueq', u'rodriguer', u'rodriguezc', u'rodriguezb', u'rodiriguez', u'roderiguez', u'rodriguezl', u'rodriguezp', u'rodriguezr', u'rodriguezf', u'rodriguezm', u'rodriigues', u'roidriguez', u'rodriuguez', u'rodriguze', u'rodrigus', u'ridriguez', u'rodrguez', u'rodrigu', u'rodriguear', u'rodriguezzc', u'rodriguezve', u'rodriguezde', u'rodriguezcc', u'rodriguis', u'rodriguies', u'rodrkiguez', u'rodrigruez', u'rodriggues', u'rodrigous', u'rodrigoes', u'riodriguez', u'reodriguez', u'rodraiguez', u'rodreiguez', u'rodrieguez', u'rodrigoe', u'rodrighez', u'rodrigquez', u'rodriguezba', u'rodriguezal', u'rodriguey', u'roudriguez', u'rodruiguez', u'rodrygue', u'rodrigufz', u'rodriguqz', u'rodriguezfi', u'rodriguezma', u'rodriguezra', u'rodriguezjr', u'rodriguezri', u'rodriguezro', u'rodriguezva', u'rodriguezsie', u'rodriguezoq', u'rodriguezgo', u'rodriguezzcc', u'rodrigz', u'rodrigueth', u'rodriguera', u'rodriguery', u'rodriguen', u'rodrigques', u'rhodrigues', u'rodriquez', u'rodriguezreye', u'peraltarodriguez', u'rodr iguez', u'de rodriguez']
+
+    def handle(self, *args, **options):
+        first_name_list = self._first_names()
+        last_name_list = self._last_names()
+        esu = ElasticSearchUtils()
+        case_id_list = esu.case_list_from_name_list(first_name_list, last_name_list)
+        case_obj_matches = esu.get_scnj_cases(case_id_list)
+        print("Case objects returned: {}".format(len(case_obj_matches)))
+
+
+
+

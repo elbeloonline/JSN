@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+{% block title %}Common Names{% endblock %}
+
+{% block css %}
+  {{ block.super }}
+    <style>
+      .ms-list {
+        height: 500px !important;
+      }
+    .custom-header {
+      font-weight: bold;
+    }
+    .name-decoration {
+      font-weight: bold;
+      text-decoration: underline;
+    }
+    </style>
+{% endblock css %}
+
+{% block content %}
+  <h3>
+    <a {% if name_type == 'female' %}class="name-decoration"{% endif %} href="{% url 'nameviewer:common_names' 'female' %}">Female</a> |
+    <a {% if name_type == 'male' %}class="name-decoration"{% endif %} href="{% url 'nameviewer:common_names' 'male' %}">Male</a> |
+    <a {% if name_type == 'surname' %}class="name-decoration"{% endif %} href="{% url 'nameviewer:common_names' 'surname' %}">Surname</a>
+  </h3>
+
+  <h5>First, select a name from the list of the most common {{ name_type }} names:</h5>
+  <p>
+    <select class="js-example-basic-single">
+      {% if not name_select %}
+        <option value='' selected="selected"></option>
+      {% endif %}
+      {% for cn in common_names_list %}
+        {% if name_select == cn %}
+          <option value='{{ cn }}' selected="selected">{{ cn }}</option>
+        {% else %}
+          <option value='{{ cn }}'>{{ cn }}</option>
+        {% endif %}
+      {% endfor %}
+    </select>
+  </p>
+
+  <p>*or*</p>
+  <h5>Type a name into the box below if you want to lookup a non-common name.</h5>
+  <input id="uncommon-name" name="uncommon-name" value="{% if name_select %}{{name_select}}{% endif %}"></input>&nbsp;<button class="js-uncommon-name-click">Search name</button>
+
+  {% if scored_names %}
+    <h5>Next, choose the names you want the system to include in searches below. Click submit to save your changes.</h5>
+  {% endif %}
+  {% if scored_names %}
+  <div class="container">
+    <div class="row">
+      <div class="col">
+          <form id="name_variants_form" action="{% url 'nameviewer:common_names' name_type name_select %}" method="post">
+            {% csrf_token %}
+            <select multiple="multiple" id="name-variation-select" name="name-variation-select[]">
+                {% for sn in scored_names %}
+                  {% if sn.score|add:"0" >= score_threshold %}
+                    {% if sn.deleted == '' or sn.deleted == 'N' %}
+                      <option value='{{ sn.name_match }}' selected>{{ sn.name_match }}</option>
+                    {% else %}
+                      <option value='{{ sn.name_match }}'>{{ sn.name_match }}</option>
+                    {% endif %}
+                  {% endif %}
+                {% endfor %}
+
+            </select>
+            <div style="margin-top:15px">
+              <input type="submit" value="Submit">
+            </div>
+          </form>
+      </div>
+      <div class="col">
+        <h6>If the variation of the name you're looking for isn't shown to the left, you can add a variation below:</h6>
+        <p>
+          <input id="new-alias" name="new-alias"></input>&nbsp;<button class="js-new-name">Add name alias</button>
+        </p>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+
+{% endblock content %}
+
+{% block custom-javascript %}
+<script>
+  $(document).ready(function() {
+      {% if scored_names %}
+        $('#name-variation-select').multiSelect({
+          selectableHeader: "<div class='custom-header'>Inactive Names</div>",
+          selectionHeader: "<div class='custom-header'>Active Names</div>",
+          selectableOptgroup: true,
+          cssClass: "jquery-multiselect",
+          autoSize : false
+        });
+      {% endif %}
+      $('.js-example-basic-single').select2();
+  });
+  $('.js-example-basic-single').on('change', function() {
+    var selected_name = 'smith';
+    if (this.value) { selected_name = this.value; }
+    var url = "{% url 'nameviewer:common_names' name_type %}" + "/"  + selected_name;
+    window.location = url;
+  });
+
+  function inputHandler() {
+    var entered_name = 'sean';
+    var name_input = document.getElementById("uncommon-name");
+    if (name_input.value) { entered_name = name_input.value; }
+    var url = "{% url 'nameviewer:common_names' name_type %}" + "/"  + entered_name;
+    window.location = url;
+  }
+
+  function newNameHandler() {
+    var name_selected = document.getElementById("uncommon-name");  // original name entered
+    if (name_selected.value) { entered_name = name_selected.value; }
+    var name_input = document.getElementById("new-alias");  // name alias to add
+    if (name_input.value) { alias_name = name_input.value; }
+    var url = "{% url 'nameviewer:new_name_alias' name_type %}" + "/{{name_select}}/" + alias_name;
+    window.location = url;
+  }
+
+  $('.js-uncommon-name-click').on('click', inputHandler);
+
+  $('#uncommon-name').on('keydown', function(e) {
+    if (e.which == 13) {
+        inputHandler();
+    }
+  });
+
+  $('.js-new-name').on('click', newNameHandler);
+
+</script>
+{% endblock custom-javascript %}

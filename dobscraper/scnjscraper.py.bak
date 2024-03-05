@@ -1,0 +1,211 @@
+import collections
+import re
+import time
+
+from selenium.common.exceptions import WebDriverException
+from selenium.webdriver.support.wait import WebDriverWait
+from twocaptchaapi import TwoCaptchaApi
+
+MatchedDebtor = collections.namedtuple('MatchedDebtor', 'dob debtor_name judgment_num')
+
+
+class SCNJScraper:
+
+    nj_courts_login_url = 'https://portal.njcourts.gov/webe4/JudgmentWeb/jsp/judgmentCaptcha.faces'
+    MAX_CAPTCHA_TRIES = 5
+
+    def __init__(self, browser):
+        """
+        Basic setup common to each scraper instance
+        :type browser: selenium.webdriver.Firefox.webdriver
+        :param browser:
+        """
+        self.browser = browser
+        self.wait = WebDriverWait(self.browser, 10)
+        self.browser_explicit_wait_time = 3
+        # https://codereview.stackexchange.com/questions/167327/scraping-the-full-content-from-a-lazy-loading-webpage
+        self.browser.set_page_load_timeout(10)
+
+    def load_login_page(self):
+        """
+        Load the login page for the court system
+        :return:
+        """
+        self.browser.get(self.nj_courts_login_url)
+
+    def login_scraper(self):
+        # @TODO: need to handle slow page loads by changing proxy address
+        self.load_login_page()
+        captcha_filename = '2captcha.png'
+        captcha_image_saved = self.save_captcha_img(captcha_filename)
+        # self.assertTrue(captcha_image_saved)
+        api = CaptchaAPI()
+        captcha_result = None
+        try:
+            captcha_result = api.solve_captcha(captcha_filename)
+        except Exception as e:
+            print('An exception occurred while solving the captcha: {}'.format(e.message))
+        # self.assertGreaterEqual(len(captcha_result), 6) # assumes the captcha is 6 characters long
+        # @TODO: handle captchas that are the wrong length
+        return captcha_result
+
+    def save_captcha_img(self, captcha_filename):
+        # https://stackoverflow.com/questions/17361742/download-image-with-selenium-python
+        captcha_saved = False
+        with open(captcha_filename, 'wb') as file:
+            xpath_element = self.browser.find_element_by_xpath('//div[contains(@id,"Aleft")]/img')
+            file.write(xpath_element.screenshot_as_png)
+            captcha_saved = True
+        return captcha_saved
+
+    def enter_solved_captcha_text(self, captcha_text):
+        input_element = self.browser.find_element_by_xpath('//input[contains(@id,"judgmentSearchForm:captchaText")]')
+        input_element.send_keys(captcha_text)
+        time.sleep(1)
+        btn_element = self.browser.find_element_by_xpath('//input[contains(@id,"judgmentSearchForm:validatedCaptchaSubmitBtn")][2]')
+        btn_element.click()
+
+
+    def navigate_to_judgment_tab(self):
+        tab_element = self.browser.find_element_by_xpath('//div[contains(@id, "tabs")]//li[2]')
+        tab_element.click()
+
+    @staticmethod
+    def split_judgment_by_dash(judgment):
+        """
+        Split a judgment with dashes into a list
+        :type judgment str
+        :param judgment Judgment in the format of PD-187487-18
+        :return: List
+        """
+        return judgment.split('-')
+
+    def enter_judgment_and_search(self, judgment):
+        """
+        Enter a judgment into the search form and search.
+        Assumes navigate_to_judgment_tab has been called to navigate browser to the correct page
+        :param judgment: list of str returned by split_judgment_by_dash
+        :return:
+        """
+        import random
+
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.common.keys import Keys
+        from selenium.webdriver.support import expected_conditions as Ec
+
+        input_element = self.browser.find_element_by_xpath('//input[contains(@id,"judgmentSearchForm:jdgmntTypeCode")]')
+        input_element.clear()
+        input_element.send_keys(judgment[0])
+        # time.sleep(1)
+        input_element = self.browser.find_element_by_xpath('//input[contains(@id,"judgmentSearchForm:jdgmntSqnNo")]')
+        input_element.clear()
+        input_element.send_keys(judgment[1])
+        # time.sleep(1)
+        input_element = self.browser.find_element_by_xpath('//input[contains(@id,"judgmentSearchForm:jdgmntNoYr")]')
+        input_element.clear()
+        input_element.send_keys(judgment[2])
+        time.sleep(random.randrange(1,4))
+        input_element.send_keys(Keys.TAB)
+        input_element.send_keys(Keys.ENTER)
+        # time.sleep(2)  # use more sophisticated method to ensure page is loaded
+        WebDriverWait(self.browser, 5).until(Ec.presence_of_element_located((By.XPATH, '//input[@value="Search Again"]')))
+
+    def navigate_to_judgment_details(self):
+        """
+        Navigate to the details page of the judgment where the list of debtors are shown
+        :return:
+        """
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as Ec
+
+        judgment_link = self.browser.find_element_by_xpath('//td/a/span[contains(@class,"outputText")]')
+        judgment_link.click()
+        # time.sleep(5)
+        WebDriverWait(self.browser, 5) \
+            .until(Ec.presence_of_element_located((By.CLASS_NAME, 'tabCSaseHeaderFirst')))
+
+    def click_debtor_link(self):
+        """
+        Locate and click the debtor link on the judgment details page
+        Assumes navigate_to_judgment_details has been called to navigate browser to the correct page
+        Typically just returns a list of 1.
+        :return: list of MatchedDebtor
+        """
+
+        # case_rows = self.browser.find_element_by_xpath('//table[@class="LineTableBorder"]//tr')
+        case_table_element = self.browser.find_element_by_xpath('//table[@class="LineTableBorder"]//tbody')
+        case_rows = case_table_element.find_elements_by_tag_name('tr')
+        matched_names = []
+        for row_data in case_rows:
+            row_match = row_data.find_elements_by_tag_name('td')
+            party_cell = row_match[1]
+            party_text = str(party_cell.text).strip()
+            # print('Examining cell: {}'.format(debtor_cell))
+            if party_text == 'DEBTOR':
+                debtor_cell = row_match[0]
+                debtor_name = str(debtor_cell.text).strip()
+                print('Located row - debtor name: {}'.format(debtor_name))
+                debtor_link = debtor_cell.find_element_by_tag_name('a')
+                debtor_link.click()
+                # time.sleep(5)
+                dob = self.scrape_date_of_birth()
+                matched_debtor = MatchedDebtor(dob=dob, debtor_name=debtor_name, judgment_num=None)
+                matched_names.append(matched_debtor)
+        return matched_names
+
+    def scrape_date_of_birth(self):
+        """
+        Scrape the date of birth from the party window.
+        Assumes click_debtor_link has been called for navigation which generates a new window.
+        Also cleans up after itself and closes the current window where the dob was scraped
+        https://stackoverflow.com/questions/10629815/how-to-switch-to-new-window-in-selenium-for-python
+        :return str: scraped birth date
+        """
+        from selenium.webdriver.common.by import By
+        from selenium.webdriver.support import expected_conditions as Ec
+
+        scraped_birth_date = None
+        window_before = self.browser.window_handles[0]
+        window_after = self.browser.window_handles[1]
+        self.browser.switch_to_window(window_after)
+        # locate birth date
+        try:
+            WebDriverWait(self.browser, 5) \
+                .until(Ec.presence_of_element_located((By.ID, 'PrintPageButtons')))
+            birth_date_cell = self.browser.find_element_by_xpath('//div[contains(.,"Birth Date")]/span')
+            scraped_birth_date =  str(birth_date_cell.text).strip()
+            # print('Found birth date: {}').format(scraped_birth_date)
+        except:
+            pass  # not found @TODO: throw a custom exception and log in db somehow as N/A
+        finally:
+            self.browser.close()
+            self.browser.switch_to_window(window_before)
+        time.sleep(2)
+
+        return scraped_birth_date
+
+    def login_and_solve(self, scraper):
+        num_tries = 0
+        while num_tries < 3:
+            try:
+                captcha_text = self.login_scraper()
+                scraper.enter_solved_captcha_text(captcha_text)
+                break
+            except WebDriverException as e:  # WebDriverException:
+                num_tries += 1
+        assert(num_tries < 3)
+
+class CaptchaAPI:
+
+    API_KEY = 'c8994d8a40ae83fcf0680ce86efa8f01'
+
+    def __init__(self):
+        self.api = TwoCaptchaApi(self.API_KEY)
+
+    def solve_captcha(self, captcha_filename):
+        with open(captcha_filename, 'rb') as captcha_file:
+            captcha = self.api.solve(captcha_file)
+        captcha_result = captcha.await_result()
+        print('Solved captcha text: {}'.format(captcha_result))
+        return captcha_result
+

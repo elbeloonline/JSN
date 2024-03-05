@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+{% block title %}Order Detail{% endblock %}
+
+{% block content %}
+  {% if not user_search_info %}
+    <h4>Please enter your client number below to pull up a previous search</h4>
+    <form action="{% url 'orders:search_prev' %}" method="post">
+      {% csrf_token %}
+      <p>
+        <label>Client file number:</label>
+        <input name="client_num" />
+      </p>
+      <p>
+        <input type="submit" name="action" value="Search"/>
+      </p>
+    </form>
+  {% endif %}
+{% endblock content %}

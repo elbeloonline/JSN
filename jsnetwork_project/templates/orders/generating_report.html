@@ -1,0 +1,26 @@
+{% extends "base.html" %}
+{% block title %}Success{% endblock %}
+
+{% block content %}
+  <h3>Report being generated for order #{{ order_id }}.</h3>
+  <br/>
+  <h5>This page will automatically refresh in a few seconds</h5>
+  <br/>
+  <div>Once your report is complete, you will be taken back to the orders screen where you can view the report.</div>
+  <div  >Alternatively, you can <a href="{% url 'orders:index' %}">click here</a> to go back to the orders list now, and
+  the button will turn blue when the order is ready once that page is reloaded.</div>
+  {% if not order_processing_is_complete %}
+    <script type="text/javascript">
+      window.setTimeout(function () {
+        location.reload();
+    }, 10000); // refresh/redirect after a few seconds.
+    </script>
+  {% else %}
+    <script type="text/javascript">
+    window.setTimeout(function () {
+      location.href = "{% url 'orders:index' %}";
+  }, 8000); // refresh/redirect after 5 seconds.
+    </script>
+
+  {% endif %}
+{% endblock content %}

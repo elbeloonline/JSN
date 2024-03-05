@@ -1,0 +1,384 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load order_extras %}
+{% block title %}Order Detail{% endblock %}
+
+{% block css %}
+  <link rel="stylesheet" href="{% static '/css/bootstrap-4.5.2.css' %}" media="screen" type="text/css">
+  <link rel="stylesheet" href="{% static '/css/style.css' %}" media="screen" type="text/css">
+  <link href="{% static '/css/bootstrap-datepicker.css' %}" rel="stylesheet"/>
+{% endblock %}
+
+{% block content %}
+
+<h3>New order</h3>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<!-- begin old -->
+{#<div class="container">#}
+{#    <form action="{% url 'orders:order_new' %}" method="post">#}
+{#        {% csrf_token %}#}
+{#        <div class="form-group row">#}
+{#          {{ form_client.as_p }}#}
+{#        </div>#}
+{#        <div class="form-group row">#}
+{#            {{ form_order.as_p }}#}
+{#        </div>#}
+{##}
+{#        <div class="form-group row">#}
+{#            <button class="btn btn-primary" data-toggle="confirmation"#}
+{#            data-btn-ok-label="Continue" data-btn-ok-class="btn-success"#}
+{#            data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"#}
+{#            data-title="Check your submission!" data-content="This will submit your order"#}
+{#            data-placement="right">Create Order</button>#}
+{#        </div>#}
+{#        {% for sn_form in formset_search_name %}#}
+{#        <div class="searchname-formset" style="padding-bottom: 2rem">#}
+{#            <div class="card card-outline-primary">#}
+{#                <div class="card-block">#}
+{#                    <h5 class="card-title">Name search</h5>#}
+{#                    <div style="padding-left: 2rem;">#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.first_name.id_for_label }}">{{ sn_form.first_name.label }}</label>#}
+{#                                {{ sn_form.first_name }}#}
+{#                                <label for="{{ sn_form.middle_name.id_for_label }}">{{ sn_form.middle_name.label }}</label>#}
+{#                                {{ sn_form.middle_name }}#}
+{#                                <label for="{{ sn_form.last_name.id_for_label }}">{{ sn_form.last_name.label }}</label>#}
+{#                                {{ sn_form.last_name }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.suffix.id_for_label }}">{{ sn_form.suffix.label }}</label>#}
+{#                                {{ sn_form.suffix }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.company_name.id_for_label }}">{{ sn_form.company_name.label }}</label>#}
+{#                                {{ sn_form.company_name }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.address1.id_for_label }}">{{ sn_form.address1.label }}</label>#}
+{#                                {{ sn_form.address1 }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.address2.id_for_label }}">{{ sn_form.address2.label }}</label>#}
+{#                                {{ sn_form.address2 }}#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.city.id_for_label }}">{{ sn_form.city.label }}</label>#}
+{#                                {{ sn_form.city }}#}
+{#                                <span style="padding-left: 2rem;">#}
+{#                                    <label for="{{ sn_form.zip.id_for_label }}">{{ sn_form.zip.label }}</label>#}
+{#                                    {{ sn_form.zip }}#}
+{#                                </span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.search_from.id_for_label }}">{{ sn_form.search_from.label }}</label>#}
+{#                                <input id="{{ sn_form.search_from.auto_id }}" class="datepicker"#}
+{#                                       name="{{ sn_form.search_from.html_name }}" type="text" value="{{ two_decades_prior }}"/>#}
+{#                                <span style="padding-left: 2rem;">#}
+{#                                    <label for="{{ sn_form.search_to.id_for_label }}">{{ sn_form.search_to.label }}</label>#}
+{#                                    <input id="{{ sn_form.search_to.auto_id }}" class="datepicker"#}
+{#                                           name="{{ sn_form.search_to.html_name }}" type="text" value="{{ todays_date }}" />#}
+{#                                </span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <label for="{{ sn_form.name_qualifier.id_for_label }}">{{ sn_form.name_qualifier.label }}</label>#}
+{#                                {{ sn_form.name_qualifier }}#}
+{#                                <span style="padding-left: 2rem;">#}
+{#                                    <label for="{{ sn_form.exact_name_match.id_for_label }}">{{ sn_form.exact_name_match.label }}</label>#}
+{#                                    {{ sn_form.exact_name_match }}#}
+{#                                </span>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                        <div class="row">#}
+{#                            <div class="col">#}
+{#                                <div class="form-group">#}
+{#                                    <label for="{{ sn_form.additional_notes.id_for_label }}">{{ sn_form.additional_notes.label }}</label>#}
+{#                                     <textarea id="{{ sn_form.additional_notes.auto_id }}" class="form-control"#}
+{#                                       name="{{ sn_form.additional_notes.html_name }}" type="text" rows="3" ></textarea>#}
+{#                               </div>#}
+{#                            </div>#}
+{#                        </div>#}
+{#                    </div>#}
+{#                </div>#}
+{#            </div>#}
+{#        </div>#}
+{#        {% endfor %}#}
+{#        {{ formset_search_name.management_form }}#}
+{##}
+{#        <div class="form-group row">#}
+{#            <button class="btn btn-primary" data-toggle="confirmation"#}
+{#            data-btn-ok-label="Continue" data-btn-ok-class="btn-success"#}
+{#            data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"#}
+{#            data-title="Check your submission!" data-content="This will submit your order"#}
+{#            data-placement="right">Create Order</button>#}
+{#        </div>#}
+{##}
+{#    </form>#}
+{#</div>#}
+<!-- end old -->
+
+<!-- begin new -->
+<!--header section-->
+<section class="header-section">
+    <div class="container">
+<div class="brand-logo">
+    <a href="#"><img src="{% static '/img/logo.png' %}" alt="Judgement Search Network"></a>
+</div>
+    </div>
+</section>
+<!--header section end-->
+<!--search form section-->
+<section class="search-section">
+    <div class="container">
+    <div class="descrption">
+      <h1 class="text-center"><span class="semi-bold">OK.</span><br>
+      <span class="medium">Let’s do a </span><span class="extra-bold">Name Search</span></h1>
+    </div>
+    <div class="search-form-section text-center">
+        <div class="row">
+            <div class="col-md-12">
+
+                <form class="form-horizontal" action="{% url 'orders:order_new' %}" method="post">
+                    {% csrf_token %}
+                    <div class="gradient-bg mt-3">
+                        <div class="form-group mb-5">
+                            <div class="row m-0">
+
+{#                                    <label class="control-label col-sm-3 offset-sm-1 mb-0">Client Name:</label>#}
+                              <span class="control-label col-sm-3 offset-sm-1 mb-0">{{ form_client.client_name.label }}</span>
+                                <div class="col-sm-4 ">
+{#                                        <input type="text" class="form-control cstm-control" name="client_name">#}
+{#                                        <span class="form-control cstm-control">{{ form_client.client_name }}</span>#}
+                                  {{ form_client.client_name|addcss:"form-control cstm-control" }}
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="form-group mb-0">
+                            <div class="row m-0">
+                                <div class="col-md-6">
+                                    <div class="row mb-3">
+{#                                            <span class="control-label col-sm-3 offset-sm-1 mb-0">{{ form_order.title_number.label }}</span>#}
+                                        <label class="control-label col-sm-6 mb-0">CLIENT FILE #:</label>
+                                        <div class="col-sm-6">
+{#                                                <input type="text" class="form-control cstm-control" name="client_file">#}
+                                            {{ form_order.title_number|addcss:"form-control cstm-control" }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row mb-3">
+                                        <label class="control-label col-sm-6 mb-0">INTERNAL #:</label>
+                                        <div class="col-sm-6">
+{#                                                <input type="text" class="form-control cstm-control" name="internal">#}
+                                            {{ form_order.internal_tracking_num|addcss:"form-control cstm-control" }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+
+                    </div>
+
+    <div class="form-group row">
+        <button class="btn btn-primary" data-toggle="confirmation"
+        data-btn-ok-label="Continue" data-btn-ok-class="btn-success"
+        data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"
+        data-title="Check your submission!" data-content="This will submit your order"
+        data-placement="right">Create Order</button>
+    </div>
+
+                    {% for sn_form in formset_search_name %}
+                    <div class="mt-3 without-gradient">
+                        <div class="form-group">
+                          <div class="row m-0">
+
+                              <label class="control-label col-sm-3 offset-sm-1 mb-0">First name:</label>
+                              <div class="col-sm-4">
+{#                                    <input type="text" class="form-control cstm-control" name="first_name">#}
+{#                                      <input type="text" class="form-control cstm-control" name="first_name">#}
+                              {{ sn_form.first_name|addcss:"form-control cstm-control" }}
+                              </div>
+                          </div>
+
+                      </div>
+                      <div class="form-group">
+                          <div class="row m-0">
+
+                              <label class="control-label col-sm-3 offset-sm-1 mb-0">Middle Name:</label>
+                              <div class="col-sm-4">
+{#                                        <input type="text" class="form-control cstm-control" name="middle_name">#}
+                                  {{ sn_form.middle_name|addcss:"form-control cstm-control" }}
+                              </div>
+                          </div>
+
+                      </div>
+                      <div class="form-group">
+                          <div class="row m-0">
+
+                              <label class="control-label col-sm-3 offset-sm-1 mb-0">Last Name:</label>
+                              <div class="col-sm-4">
+{#                                        <input type="text" class="form-control cstm-control" name="last_name">#}
+                                  {{ sn_form.last_name|addcss:"form-control cstm-control" }}
+                              </div>
+                          </div>
+
+                      </div>
+
+                        <h2 class="light mb-5 mt-5">Or</h2>
+
+                        <div class="form-group">
+                            <div class="row m-0">
+
+                                <label class="control-label company-label col-sm-4 pl-5 mb-0">Company Name:</label>
+                                <div class="col-sm-4">
+{#                                        <input type="text" class="form-control cstm-control" name="company_name">#}
+                                    {{ sn_form.company_name|addcss:"form-control cstm-control" }}
+                                </div>
+                            </div>
+
+                        </div>
+
+                    </div>
+
+                    <div class="mt-3 bottom-section">
+{#                            <div class="bottom-divider mb-5">#}
+{#                                <img src="{% static '/img/bottom-divider.png' %}" width="100%" alt="bottom divider">#}
+{#                            </div>#}
+{#                            <h2 class="text-center semi-bold mb-5">ALMOST THERE...</h2>#}
+                        <div class="form-group">
+                            <div class="row m-0">
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="control-label col-sm-8 mb-0">search from #:</label>
+                                        <div class="col-sm-4">
+{#                                                <input type="text" class="form-control date-picker-control" placeholder="(date)" name="start_date" id="start">#}
+                                            {{ sn_form.search_from|addcss:"form-control datepicker date-picker-control" }}
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="row">
+                                        <label class="control-label col-sm-2 mb-0">to:</label>
+                                        <div class="col-sm-4">
+{#                                                <input type="text" class="form-control date-picker-control" placeholder="(date)" name="end_date" id="end">#}
+                                            {{ sn_form.search_to|addcss:"form-control datepicker date-picker-control" }}
+                                        </div>
+                                    </div>
+                                </div>
+
+                            </div>
+
+                        </div>
+                        <div class="bottom-divider mb-5">
+                            <img src="{% static '/img/bottom-divider.png' %}" width="100%" alt="bottom divider">
+                        </div>
+
+                    </div>
+
+                    {% endfor %}
+                    {{ formset_search_name.management_form }}
+
+                    <h2 class="text-center semi-bold mb-5">ALMOST THERE...</h2>
+                    <div class="form-group">
+                        <div class="row m-0">
+
+                            <label class="control-label col-sm-4 mb-0">E-MAIL FOR RECEIPT:</label>
+                            <div class="col-sm-5 pl-0">
+                                <input type="email" class="form-control cstm-control" name="receipt_email">
+                            </div>
+                            <div class="col-sm-3 pl-0">
+{#                                    <button type="submit" class="btn btn-default submit-btn mt-n5">Submit</button>                                    </div>#}
+                                <button type="submit" class="btn btn-primary" data-toggle="confirmation"
+                                  data-btn-ok-label="Continue" data-btn-ok-class="btn-success"
+                                  data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"
+                                  data-title="Check your submission!" data-content="This will submit your order"
+                                  data-placement="right">Create Order</button>
+                            </div>
+                        </div>
+
+                    </div>
+
+    <div class="form-group row">
+        <button class="btn btn-primary" data-toggle="confirmation"
+        data-btn-ok-label="Continue" data-btn-ok-class="btn-success"
+        data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"
+        data-title="Check your submission!" data-content="This will submit your order"
+        data-placement="right">Create Order</button>
+    </div>
+
+                </form>
+                </div>
+            </div>
+
+    </div>
+    </div>
+
+</section>
+
+{% endblock content %}
+
+{% block javascript %}
+  <script src="{% static '/js/jquery-3.5.1.js' %}"></script>
+  <script src="{% static '/js/bootstrap-4.5.2.js' %}"></script>
+  <script src="{% static '/js/bootstrap-datepicker.js' %}"></script>
+{% endblock %}
+
+
+{% block custom-javascript %}
+<script src="{% static '/js/jquery.formset.js' %}"></script>
+<script>
+    $(function renewDatePickers() {
+        $(".datepicker").datepicker('destroy');
+        $(".datepicker").datepicker();
+    })
+
+    $('.searchname-formset').formset({
+        addText: 'Add additional name',
+        deleteText: 'remove',
+        addCssClass: 'add-row',
+        deleteCssClass: 'delete-row',
+        added: function(row){
+            $( 'input[name$="search_from"]' ).filter(function() {
+              return !this.value;
+            }).val('{{ two_decades_prior }}');
+            $( 'input[name$="search_to"]' ).filter(function() {
+              return !this.value;
+            }).val('{{ todays_date }}');
+            $(".datepicker").datepicker('destroy');
+            $(".datepicker").datepicker();
+        }
+    });
+    // prevent enter from submitting form
+    $(window).keydown(function(event){
+    if(event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+    // confirmations
+    $('[data-toggle=confirmation]').confirmation({
+      rootSelector: '[data-toggle=confirmation]',
+      // other options
+    });
+  });
+</script>
+{% endblock custom-javascript %}

@@ -1,0 +1,224 @@
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-ExtraBold.woff2') format('woff2'),
+    url('../fonts/Poppins-ExtraBold.woff') format('woff'),
+    url('../fonts/Poppins-ExtraBold.ttf') format('truetype');
+    font-weight: 800;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Light.woff2') format('woff2'),
+    url('../fonts/Poppins-Light.woff') format('woff'),
+    url('../fonts/Poppins-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Medium.woff2') format('woff2'),
+    url('../fonts/Poppins-Medium.woff') format('woff'),
+    url('../fonts/Poppins-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-Regular.woff2') format('woff2'),
+    url('../fonts/Poppins-Regular.woff') format('woff'),
+    url('../fonts/Poppins-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Poppins';
+    src: url('../fonts/Poppins-SemiBold.woff2') format('woff2'),
+    url('../fonts/Poppins-SemiBold.woff') format('woff'),
+    url('../fonts/Poppins-SemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+body{
+    background: #f7f7fd;
+    font-family: 'Poppins', sans-serif;
+}
+/*franchise tax page css start*/
+.header-section{padding:75px 0 0 0;}
+.brand-logo img{width:250px;}
+.search-section{padding:50px 0;}
+.search-section h1 .medium{font-family: 'Poppins', sans-serif; font-weight: 500;font-style: normal;font-size: 24pt;text-transform: uppercase;}
+.search-section h1 .semi-bold{font-family: 'Poppins', sans-serif; font-weight: 600;font-style: normal;font-size: 28pt;text-transform: uppercase;}
+.search-section h1 .extra-bold{font-family: 'Poppins', sans-serif; font-weight: 800;font-style: normal;font-size: 24pt;text-decoration: underline;text-transform: uppercase;}
+.form-horizontal .gradient-bg .form-group .control-label{font-family: 'Poppins', sans-serif;font-weight: 300;font-style: normal;color:#fff;font-size: 18pt;text-transform: uppercase;}
+.form-horizontal .gradient-bg .form-group .cstm-control{border-radius: 50px;box-shadow: none;background: #f7f7fd;}
+.form-horizontal .bottom-section .form-group .control-label{font-family: 'Poppins', sans-serif;font-weight: 300;font-style: normal;color:#000;font-size: 18pt;text-transform: uppercase;}
+.form-horizontal .without-gradient .form-group .control-label{font-family: 'Poppins', sans-serif;font-weight: 300;font-style: normal;color:#000;font-size: 18pt;text-transform: uppercase;}
+/*.form-horizontal .without-gradient .form-group .textarea-label{text-align: start;}*/
+.form-horizontal .without-gradient .form-group .cstm-control{border-radius: 50px;box-shadow: 0 0 5px 3px #dbdbe0;background: #f7f7fd;}
+.form-horizontal .form-group .date-picker-control{border-radius: 15px !important;box-shadow: 0 0 5px 3px #dbdbe0; height:45px !important;background: #f7f7fd;}
+.form-horizontal .form-group .cstm-control{border-radius: 50px;box-shadow: 0 0 5px 3px #dbdbe0;background: #f7f7fd;}
+.form-horizontal .without-gradient .form-group p{font-size: 12pt;font-family: 'Poppins', sans-serif; font-weight: 500;font-style: normal;}
+.form-horizontal .form-group .custom-textarea{border-radius: 50px;resize:none;border-radius: 15px;box-shadow: 0 0 5px 3px #dbdbe0;background: #f7f7fd;}
+.gradient-bg{ background: #150628;background: linear-gradient(171deg, #150628 35%, #56367B 80%);padding: 50px 0;border-radius: 20px;}
+.submit-btn{background:url("../assets/img/button-bg.png");color:#fff;background-size: cover;padding: 7px 50px;border-radius: 10px;box-shadow: 0 0 5px 3px #dbdbe0;text-transform: uppercase;}
+.submit-btn:hover{color:#fff;}
+.search-section h2.semi-bold{font-family: 'Poppins', sans-serif; font-weight: 600;font-style: normal;font-size: 30pt;text-transform: uppercase;letter-spacing: 10px;}
+.search-section h2.light{font-family: 'Poppins', sans-serif; font-weight: 300;font-style: normal;font-size: 18pt;text-transform: uppercase;}
+
+/*franchise tax page css end*/
+/* Start of login css*/
+.login-section{padding:50px 0;}
+.start-search{
+    font-size: 34pt;
+    font-family: 'Poppins', sans-serif;
+    word-spacing: 10px;
+    letter-spacing: 7px;
+    font-weight: 600;
+}
+.guest-login{
+    font-size: 20pt;
+    font-family: 'Poppins', sans-serif;
+    letter-spacing: 7px;
+    font-weight: 600;
+    margin-top: 30px;
+}
+.login-form{
+    margin-left: 18%;
+}
+.guest-login-form{
+    margin-top: 30px;
+}
+.guest-login-form label{
+    font-size: 18pt;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 300;
+    letter-spacing: 4px;
+}
+.guest-login-form input{
+    border-radius: 25px;
+    box-shadow: 1px 1px 7px 0px rgba(0, 0, 0, .16);
+}
+.login-btn-submit{
+    background-color: #000000;
+    color: #ffffff;
+    box-shadow: 0px 4px 10px 0px rgba(0, 0, 0, .16);
+    font-size: 18pt;
+    font-family: 'Poppins', sans-serif;
+    font-weight: normal;
+    border-radius: 25px;
+}
+.login-btn-submit:hover{color:#fff;}
+
+/* end of login css */
+
+/* Start of select seacrh page*/
+.search-text-section, .search-checkbox-section{padding: 50px 0;}
+.checkbox-heading{
+    font-size: 16pt;
+    font-family: 'Poppins', sans-serif;
+    font-weight: 600;
+	background:url("../img/checkbox-bg.png");
+	background-repeat: no-repeat;
+    background-size: cover;
+    /* background: #150628;background: linear-gradient(171deg, #150628 35%, #56367B 80%); */
+    color: #ffffff;
+    text-align: center;
+}
+.search-boxes{
+    box-shadow: 1px 2px 6px 1px rgba(0, 0, 0, .16);
+    background-color: #ffffff;
+    padding:15px;
+}
+.margin-60{
+    margin-top: -26px;
+}
+.search-checkbox label{
+    font-size: 14pt;
+    font-family: 'Poppins', sans-serif;
+    font-weight: normal;
+    letter-spacing: 3px;
+    margin-left: 5px;
+}
+.search-checkbox input{
+    width: 18px;
+    height: 18px;
+
+}
+/*End of Select search page*/
+/*START FOR TAX SEARCH PAGE*/
+::-webkit-input-placeholder { /* Edge */
+  font-style:italic;
+}
+
+:-ms-input-placeholder { /* Internet Explorer */
+  font-style:italic;
+}
+
+::placeholder {
+  font-style:italic;
+}
+.property-informaton{
+    font-size: 20pt;
+    font-weight: 600;
+    text-decoration: underline;
+    margin: 35px 0px;
+}
+.tax-search-input label{
+    font-size: 14pt;
+    font-family: 'Poppins', sans-serif;
+    font-weight: normal;
+    letter-spacing: 3px;
+    margin-left: 5px;
+	text-transform:uppercase;
+}
+.tax-search-input input{
+    border-radius: 25px;
+    box-shadow: 0 0 5px 3px #dbdbe0;
+    background: #f7f7fd;
+}
+.almost-there-section label{
+    font-size: 14pt;
+    font-family: 'Poppins', sans-serif;
+    font-weight: normal;
+    letter-spacing: 3px;
+}
+.almost-there-section input{
+    border-radius: 25px;
+    box-shadow: 0 0 5px 3px #dbdbe0;
+    background: #f7f7fd;
+}
+.almost-there-section input.date-picker-control{
+    border-radius: 15px !important;
+    box-shadow: 0 0 5px 3px #dbdbe0;
+    height: 45px !important;
+    background: #f7f7fd;
+}
+/*END OF TAX SEARCH PAGE*/
+@media only screen and (max-width: 600px)  {
+    .login-form{
+        margin-left: 0%;
+    }
+    .margin-60{
+        margin-top: 20px;
+    }
+}
+
+@media screen and (max-width: 767px) {
+    .submit-btn{margin-top:20px !important;}
+    .form-horizontal{padding: 0 10px;}
+    .form-horizontal .without-gradient .form-group .textarea-label{margin-left: 0;}
+    .form-group {
+        margin-bottom: 1rem !important;
+    }
+
+}

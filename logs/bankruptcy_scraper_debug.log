@@ -1,0 +1,303 @@
+INFO:(2024-03-04 13:43:05): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:43:26): C:\Users\cesar\jsn3\.env\Lib\site-packages\allauth\account\apps.py changed, reloading. 
+INFO:(2024-03-04 13:43:26): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:43:33): C:\Users\cesar\jsn3\.env\Lib\site-packages\allauth\socialaccount\apps.py changed, reloading. 
+INFO:(2024-03-04 13:43:33): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:44:45): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:45:51): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:46:20): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:48:14): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:53:29): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:54:04): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:55:27): C:\Users\cesar\jsn3\jsnetwork_project\__init__.py changed, reloading. 
+INFO:(2024-03-04 13:55:28): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:58:20): C:\Users\cesar\jsn3\.env\Lib\site-packages\allauth\account\models.py changed, reloading. 
+INFO:(2024-03-04 13:58:21): Watching for file changes with StatReloader 
+INFO:(2024-03-04 13:58:35): C:\Users\cesar\jsn3\.env\Lib\site-packages\allauth\account\models.py changed, reloading. 
+INFO:(2024-03-04 13:58:36): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:00:41): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:01:20): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:01:50): C:\Users\cesar\jsn3\jsnetwork_project\users\models.py changed, reloading. 
+INFO:(2024-03-04 14:01:51): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:02:01): C:\Users\cesar\jsn3\jsnetwork_project\users\models.py changed, reloading. 
+INFO:(2024-03-04 14:02:01): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:02:07): C:\Users\cesar\jsn3\jsnetwork_project\users\models.py changed, reloading. 
+INFO:(2024-03-04 14:02:08): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:02:37): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:03:22): C:\Users\cesar\jsn3\orders\models.py changed, reloading. 
+INFO:(2024-03-04 14:03:22): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:03:53): C:\Users\cesar\jsn3\orders\models.py changed, reloading. 
+INFO:(2024-03-04 14:03:54): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:04:07): C:\Users\cesar\jsn3\orders\models.py changed, reloading. 
+INFO:(2024-03-04 14:04:08): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:04:18): C:\Users\cesar\jsn3\orders\models.py changed, reloading. 
+INFO:(2024-03-04 14:04:19): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:04:29): C:\Users\cesar\jsn3\orders\models.py changed, reloading. 
+INFO:(2024-03-04 14:04:30): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:04:44): C:\Users\cesar\jsn3\statereport\models.py changed, reloading. 
+INFO:(2024-03-04 14:04:45): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:04:56): C:\Users\cesar\jsn3\statereport\models.py changed, reloading. 
+INFO:(2024-03-04 14:04:57): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:05:11): C:\Users\cesar\jsn3\statereport\models.py changed, reloading. 
+INFO:(2024-03-04 14:05:12): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:06:25): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:06:35): C:\Users\cesar\jsn3\statereport\models.py changed, reloading. 
+INFO:(2024-03-04 14:06:35): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:06:47): C:\Users\cesar\jsn3\statereport\models.py changed, reloading. 
+INFO:(2024-03-04 14:06:48): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:07:00): C:\Users\cesar\jsn3\statereport\models.py changed, reloading. 
+INFO:(2024-03-04 14:07:01): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:07:16): C:\Users\cesar\jsn3\pacerscraper\models.py changed, reloading. 
+INFO:(2024-03-04 14:07:17): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:07:30): C:\Users\cesar\jsn3\pacerscraper\models.py changed, reloading. 
+INFO:(2024-03-04 14:07:31): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:07:46): C:\Users\cesar\jsn3\pacerscraper\models.py changed, reloading. 
+INFO:(2024-03-04 14:07:47): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:08:07): C:\Users\cesar\jsn3\pacerscraper\models.py changed, reloading. 
+INFO:(2024-03-04 14:08:08): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:17:15): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:17:16): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:17:57): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:17:58): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:18:05): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:18:06): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:20:42): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:20:43): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:21:47): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:21:48): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:22:06): C:\Users\cesar\jsn3\.env\Lib\site-packages\django\conf\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:22:07): Watching for file changes with StatReloader 
+INFO:(2024-03-04 14:22:32): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 14:22:33): Watching for file changes with StatReloader 
+INFO:(2024-03-04 15:55:52): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:35:03): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:35:32): C:\Users\cesar\jsn3\jsnetwork_project\users\models.py changed, reloading. 
+INFO:(2024-03-04 16:35:32): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:35:41): C:\Users\cesar\jsn3\jsnetwork_project\users\models.py changed, reloading. 
+INFO:(2024-03-04 16:35:42): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:35:47): C:\Users\cesar\jsn3\jsnetwork_project\users\models.py changed, reloading. 
+INFO:(2024-03-04 16:35:48): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:38:35): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:38:36): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:38:39): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:38:40): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:38:42): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:38:43): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:39:01): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:39:02): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:39:14): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:39:15): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:39:42): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:39:43): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:39:54): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:39:55): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:40:20): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:40:20): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:40:42): C:\Users\cesar\jsn3\.env\Lib\site-packages\compat\__init__.py changed, reloading. 
+INFO:(2024-03-04 16:40:43): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:43:59): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:46:40): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:50:35): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:51:36): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:52:18): C:\Users\cesar\jsn3\config\settings\common.py changed, reloading. 
+INFO:(2024-03-04 16:52:19): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:53:11): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:53:55): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:54:06): C:\Users\cesar\jsn3\jsnetwork_project\users\views.py changed, reloading. 
+INFO:(2024-03-04 16:54:07): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:56:02): C:\Users\cesar\jsn3\.env\Lib\site-packages\django\urls\conf.py changed, reloading. 
+INFO:(2024-03-04 16:56:03): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:56:39): C:\Users\cesar\jsn3\nameviewer\restfulengine.py changed, reloading. 
+INFO:(2024-03-04 16:56:40): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:57:09): C:\Users\cesar\jsn3\pacerscraper\models.py changed, reloading. 
+INFO:(2024-03-04 16:57:09): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:57:45): C:\Users\cesar\jsn3\config\settings\common.py changed, reloading. 
+INFO:(2024-03-04 16:57:46): Watching for file changes with StatReloader 
+INFO:(2024-03-04 16:59:03): Watching for file changes with StatReloader 
+ERROR:(2024-03-04 16:59:09): Internal Server Error: / 
+Traceback (most recent call last):
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\defaulttags.py", line 1034, in find_library
+    return parser.libraries[name]
+           ~~~~~~~~~~~~~~~~^^^^^^
+KeyError: 'staticfiles'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\core\handlers\base.py", line 204, in _get_response
+    response = response.render()
+               ^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\response.py", line 105, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\response.py", line 83, in rendered_content
+    return template.render(context, self._request)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\backends\django.py", line 61, in render
+    return self.template.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 170, in render
+    return self._render(context)
+           ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 162, in _render
+    return self.nodelist.render(context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 938, in render
+    bit = node.render_annotated(context)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 905, in render_annotated
+    return self.render(context)
+           ^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\loader_tags.py", line 127, in render
+    compiled_parent = self.get_parent(context)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\loader_tags.py", line 124, in get_parent
+    return self.find_template(parent, context)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\loader_tags.py", line 103, in find_template
+    template, origin = context.template.engine.find_template(
+                       ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\engine.py", line 125, in find_template
+    template = loader.get_template(name, skip=skip)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\loaders\base.py", line 29, in get_template
+    return Template(
+           ^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 155, in __init__
+    self.nodelist = self.compile_nodelist()
+                    ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 193, in compile_nodelist
+    return parser.parse()
+           ^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 478, in parse
+    raise self.error(token, e)
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\base.py", line 476, in parse
+    compiled_result = compile_func(self, token)
+                      ^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\defaulttags.py", line 1091, in load
+    lib = find_library(parser, name)
+          ^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\template\defaulttags.py", line 1036, in find_library
+    raise TemplateSyntaxError(
+django.template.exceptions.TemplateSyntaxError: 'staticfiles' is not a registered tag library. Must be one of:
+account
+admin_list
+admin_modify
+admin_urls
+allauth
+cache
+crispy_forms_field
+crispy_forms_filters
+crispy_forms_tags
+crispy_forms_utils
+debugger_tags
+django_tables2
+highlighting
+i18n
+indent_text
+l10n
+log
+order_extras
+socialaccount
+static
+syntax_color
+tz
+widget_tweaks
+widont
+ERROR:(2024-03-04 16:59:09): "GET / HTTP/1.1" 500 179409 
+WARNING:(2024-03-04 16:59:10): "GET /favicon.ico HTTP/1.1" 404 3555 
+INFO:(2024-03-04 17:00:11): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:00:13): "GET / HTTP/1.1" 200 4757 
+INFO:(2024-03-04 17:00:13): "GET /static/css/multi-select.css HTTP/1.1" 200 2347 
+INFO:(2024-03-04 17:00:13): "GET /static/css/project.css HTTP/1.1" 200 878 
+INFO:(2024-03-04 17:00:13): "GET /static/js/project.js HTTP/1.1" 200 838 
+INFO:(2024-03-04 17:00:13): "GET /static/js/jquery.multi-select.js HTTP/1.1" 200 20288 
+INFO:(2024-03-04 17:00:13): "GET /static/js/bootstrap-confirmation.min.js HTTP/1.1" 200 8754 
+INFO:(2024-03-04 17:00:17): "GET /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:00:17): "GET /static/css/style.css HTTP/1.1" 200 7853 
+INFO:(2024-03-04 17:00:17): "GET /static/js/jquery-3.5.1.js HTTP/1.1" 200 89476 
+INFO:(2024-03-04 17:00:17): "GET /static/js/bootstrap-4.5.2.js HTTP/1.1" 200 80885 
+INFO:(2024-03-04 17:00:17): "GET /static/img/logo.png HTTP/1.1" 200 57043 
+INFO:(2024-03-04 17:00:17): "GET /static/css/bootstrap-4.5.2.css HTTP/1.1" 200 160261 
+INFO:(2024-03-04 17:00:17): "GET /static/fonts/Poppins-Regular.woff2 HTTP/1.1" 200 52456 
+INFO:(2024-03-04 17:00:17): "GET /static/fonts/Poppins-SemiBold.woff2 HTTP/1.1" 200 52404 
+INFO:(2024-03-04 17:00:17): "GET /static/fonts/Poppins-Light.woff2 HTTP/1.1" 200 52316 
+INFO:(2024-03-04 17:00:26): "POST /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:01:05): "POST /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:01:10): "GET /accounts/password/reset/ HTTP/1.1" 200 5411 
+INFO:(2024-03-04 17:01:17): "POST /accounts/password/reset/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:01:17): "GET /accounts/password/reset/done/ HTTP/1.1" 200 4674 
+INFO:(2024-03-04 17:01:31): "GET /accounts/password/reset/key/2-c3dja5-b6c7bfa0143dfa74c6b0118a262753fc/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:01:34): "GET /accounts/password/reset/key/2-set-password/ HTTP/1.1" 200 5638 
+INFO:(2024-03-04 17:01:44): "POST /accounts/password/reset/key/2-set-password/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:01:45): "GET /accounts/password/reset/key/done/ HTTP/1.1" 200 4711 
+INFO:(2024-03-04 17:01:48): "GET /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:02:00): "POST /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:02:09): "POST /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:02:19): "POST /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:02:39): "POST /accounts/login/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:02:40): "GET /users/~redirect/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:02:41): "GET /users/user/ HTTP/1.1" 200 6314 
+INFO:(2024-03-04 17:02:47): "GET /orders HTTP/1.1" 301 0 
+INFO:(2024-03-04 17:02:51): "GET /orders/ HTTP/1.1" 200 13888 
+INFO:(2024-03-04 17:07:51): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:08:29): "GET /accounts/logout/ HTTP/1.1" 200 4856 
+INFO:(2024-03-04 17:08:33): "POST /accounts/logout/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:08:33): "GET / HTTP/1.1" 200 4860 
+INFO:(2024-03-04 17:08:36): "GET /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:08:40): "GET /accounts/password/reset/ HTTP/1.1" 200 5411 
+INFO:(2024-03-04 17:08:46): "POST /accounts/password/reset/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:08:46): "GET /accounts/password/reset/done/ HTTP/1.1" 200 4674 
+INFO:(2024-03-04 17:08:55): "GET /accounts/password/reset/key/1-c3djml-cd86e5fae59e05878ed230dc0ba59290/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:08:56): "GET /accounts/password/reset/key/1-set-password/ HTTP/1.1" 200 5638 
+INFO:(2024-03-04 17:09:06): "POST /accounts/password/reset/key/1-set-password/ HTTP/1.1" 200 5769 
+INFO:(2024-03-04 17:09:24): "POST /accounts/password/reset/key/1-set-password/ HTTP/1.1" 200 5767 
+INFO:(2024-03-04 17:12:21): "GET /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:14:49): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:15:14): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:18:03): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:19:47): C:\Users\cesar\jsn3\manage.py changed, reloading. 
+INFO:(2024-03-04 17:19:48): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:21:24): C:\Users\cesar\jsn3\config\settings\common.py changed, reloading. 
+INFO:(2024-03-04 17:27:24): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:31:42): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:33:23): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:33:26): "GET /accounts/password/reset/done/ HTTP/1.1" 200 4674 
+INFO:(2024-03-04 17:33:27): "GET /accounts/password/reset/done/ HTTP/1.1" 200 4674 
+INFO:(2024-03-04 17:33:31): "GET / HTTP/1.1" 200 4757 
+INFO:(2024-03-04 17:33:33): "GET /accounts/login/ HTTP/1.1" 200 5291 
+INFO:(2024-03-04 17:33:43): "POST /accounts/login/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:33:43): "GET /users/~redirect/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:33:43): "GET /users/admin/ HTTP/1.1" 200 7259 
+ERROR:(2024-03-04 17:33:45): Internal Server Error: /nameviewer/common_names/surname 
+Traceback (most recent call last):
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\core\handlers\exception.py", line 47, in inner
+    response = get_response(request)
+               ^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\core\handlers\base.py", line 181, in _get_response
+    response = wrapped_callback(request, *callback_args, **callback_kwargs)
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\.env\Lib\site-packages\django\contrib\auth\decorators.py", line 21, in _wrapped_view
+    return view_func(request, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\nameviewer\views.py", line 89, in common_names
+    names_list, scored_names = NameAliasUtils.load_common_names(name_type, name_select)
+                               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\cesar\jsn3\nameviewer\utils.py", line 594, in load_common_names
+    with open(os.path.join(settings.MEDIA_ROOT,names_file), 'r') as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\Users\\cesar\\jsn3\\jsnetwork_project\\media\\common-surnames.txt'
+ERROR:(2024-03-04 17:33:45): "GET /nameviewer/common_names/surname HTTP/1.1" 500 95004 
+INFO:(2024-03-04 17:33:52): "GET /orders/ HTTP/1.1" 200 6890 
+INFO:(2024-03-04 17:33:58): "GET /usermgmt/ HTTP/1.1" 200 5774 
+INFO:(2024-03-04 17:34:00): "GET /usermgmt/new_user/ HTTP/1.1" 200 8414 
+INFO:(2024-03-04 17:34:05): "GET /accounts/logout/ HTTP/1.1" 200 5799 
+INFO:(2024-03-04 17:34:07): "POST /accounts/logout/ HTTP/1.1" 302 0 
+INFO:(2024-03-04 17:34:07): "GET / HTTP/1.1" 200 4860 
+INFO:(2024-03-04 17:35:08): C:\Users\cesar\jsn3\config\settings\common.py changed, reloading. 
+INFO:(2024-03-04 17:35:09): Watching for file changes with StatReloader 
+INFO:(2024-03-04 17:35:17): C:\Users\cesar\jsn3\config\settings\common.py changed, reloading. 
+INFO:(2024-03-04 17:35:18): Watching for file changes with StatReloader 

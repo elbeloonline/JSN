@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}User: {{ object.username }}{% endblock %}
+
+{% block content %}
+<div class="container">
+
+{% if object == request.user %}
+<!-- Action buttons -->
+<div class="row">
+
+  <div class="col-sm-12">
+    <h3>How to use this site</h3>
+    <p>This page provides general instructions for how to use this site.</p>
+    <p>Click the orders button to be taken to your list of previous orders. From here you can click the
+      'Add Order' link to create a new order. Fill in the information you have available for the name
+      search. The Client name, a client file number and a person name OR company name are required.</p>
+    <p>The remaining fields are all optional. Dates are automatically set to the last 20 years from today.<p>
+    <p>Once the order is entered and you have verified your entry, you are taken back to the orders list.</p>
+    <p>To run the search, click the refresh icon <i class="fa fa-refresh"></i> beside the button labeled 'FULL'.
+    This will take you to a screen that refreshes while the names are being searched. This screen will
+      automatically return you to the order list once the order is complete. The button will be blue instead of
+    gray when the order is finished generating.</p>
+    <p>If you want to enter an additional name search while the current search is being executed, you can click
+    on the link to go back to the orders screen and enter another. This won't affect your current search.</p>
+    <p>If multiple searches are being caried out there may be orders in the queue waiting to be serviced. You can
+    check the status of the queue by click on the searches backlog (coming soon!).</p>
+    <p>Clicking on the client file number will let you view details about the information you entered for a
+      particular order.</p>
+
+  </div>
+
+</div>
+<!-- End Action buttons -->
+{% endif %}
+
+
+</div>
+{% endblock content %}
+

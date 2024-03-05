@@ -1,0 +1,165 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% block title %}Order Detail{% endblock %}
+
+{% block content %}
+
+<h3>New order</h3>
+
+{% if error_message %}<p><strong>{{ error_message }}</strong></p>{% endif %}
+
+<div class="container">
+    <form action="{% url 'orders:order_new' %}" method="post">
+        {% csrf_token %}
+        <div class="form-group row">
+          {{ form_client.as_p }}
+        </div>
+        <div class="form-group row">
+            {{ form_order.as_p }}
+        </div>
+
+        <div class="form-group row">
+            <button class="btn btn-primary" data-toggle="confirmation"
+            data-btn-ok-label="Continue" data-btn-ok-class="btn-success"
+            data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"
+            data-title="Check your submission!" data-content="This will submit your order"
+            data-placement="right">Create Order</button>
+        </div>
+        {% for sn_form in formset_search_name %}
+        <div class="searchname-formset" style="padding-bottom: 2rem">
+            <div class="card card-outline-primary">
+                <div class="card-block">
+                    <h5 class="card-title">Name search</h5>
+                    <div style="padding-left: 2rem;">
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.first_name.id_for_label }}">{{ sn_form.first_name.label }}</label>
+                                {{ sn_form.first_name }}
+                                <label for="{{ sn_form.middle_name.id_for_label }}">{{ sn_form.middle_name.label }}</label>
+                                {{ sn_form.middle_name }}
+                                <label for="{{ sn_form.last_name.id_for_label }}">{{ sn_form.last_name.label }}</label>
+                                {{ sn_form.last_name }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.suffix.id_for_label }}">{{ sn_form.suffix.label }}</label>
+                                {{ sn_form.suffix }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.company_name.id_for_label }}">{{ sn_form.company_name.label }}</label>
+                                {{ sn_form.company_name }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.address1.id_for_label }}">{{ sn_form.address1.label }}</label>
+                                {{ sn_form.address1 }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.address2.id_for_label }}">{{ sn_form.address2.label }}</label>
+                                {{ sn_form.address2 }}
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.city.id_for_label }}">{{ sn_form.city.label }}</label>
+                                {{ sn_form.city }}
+                                <span style="padding-left: 2rem;">
+                                    <label for="{{ sn_form.zip.id_for_label }}">{{ sn_form.zip.label }}</label>
+                                    {{ sn_form.zip }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.search_from.id_for_label }}">{{ sn_form.search_from.label }}</label>
+                                <input id="{{ sn_form.search_from.auto_id }}" class="datepicker"
+                                       name="{{ sn_form.search_from.html_name }}" type="text" value="{{ two_decades_prior }}"/>
+                                <span style="padding-left: 2rem;">
+                                    <label for="{{ sn_form.search_to.id_for_label }}">{{ sn_form.search_to.label }}</label>
+                                    <input id="{{ sn_form.search_to.auto_id }}" class="datepicker"
+                                           name="{{ sn_form.search_to.html_name }}" type="text" value="{{ todays_date }}" />
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <label for="{{ sn_form.name_qualifier.id_for_label }}">{{ sn_form.name_qualifier.label }}</label>
+                                {{ sn_form.name_qualifier }}
+                                <span style="padding-left: 2rem;">
+                                    <label for="{{ sn_form.exact_name_match.id_for_label }}">{{ sn_form.exact_name_match.label }}</label>
+                                    {{ sn_form.exact_name_match }}
+                                </span>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col">
+                                <div class="form-group">
+                                    <label for="{{ sn_form.additional_notes.id_for_label }}">{{ sn_form.additional_notes.label }}</label>
+                                     <textarea id="{{ sn_form.additional_notes.auto_id }}" class="form-control"
+                                       name="{{ sn_form.additional_notes.html_name }}" type="text" rows="3" ></textarea>
+                               </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+        {{ formset_search_name.management_form }}
+
+        <div class="form-group row">
+            <button class="btn btn-primary" data-toggle="confirmation"
+            data-btn-ok-label="Continue" data-btn-ok-class="btn-success"
+            data-btn-cancel-label="Cancel" data-btn-cancel-class="btn-danger"
+            data-title="Check your submission!" data-content="This will submit your order"
+            data-placement="right">Create Order</button>
+        </div>
+
+    </form>
+</div>
+{% endblock content %}
+
+{% block custom-javascript %}
+<script src="{% static '/js/jquery.formset.js' %}"></script>
+<script>
+    $(function renewDatePickers() {
+        $(".datepicker").datepicker('destroy');
+        $(".datepicker").datepicker();
+    })
+
+    $('.searchname-formset').formset({
+        addText: 'Add additional name',
+        deleteText: 'remove',
+        addCssClass: 'add-row',
+        deleteCssClass: 'delete-row',
+        added: function(row){
+            $( 'input[name$="search_from"]' ).filter(function() {
+              return !this.value;
+            }).val('{{ two_decades_prior }}');
+            $( 'input[name$="search_to"]' ).filter(function() {
+              return !this.value;
+            }).val('{{ todays_date }}');
+            $(".datepicker").datepicker('destroy');
+            $(".datepicker").datepicker();
+        }
+    });
+    // prevent enter from submitting form
+    $(window).keydown(function(event){
+    if(event.keyCode == 13) {
+      event.preventDefault();
+      return false;
+    }
+    // confirmations
+    $('[data-toggle=confirmation]').confirmation({
+      rootSelector: '[data-toggle=confirmation]',
+      // other options
+    });
+  });
+</script>
+{% endblock custom-javascript %}

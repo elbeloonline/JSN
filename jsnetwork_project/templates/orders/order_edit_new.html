@@ -1,0 +1,215 @@
+{% extends "base.html" %}
+{% load static from staticfiles %}
+{% load order_extras %}
+{% block title %}Order Detail{% endblock %}
+
+{% block css %}
+{#    <!-- Latest compiled and minified Bootstrap 4 Alpha 4 CSS -->#}
+{#    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">#}
+{##}
+{#    <!-- Your stuff: Third-party CSS libraries go here -->#}
+{#    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">#}
+{#    <link rel="stylesheet" href="{% static '/css/multi-select.css' %}" media="screen" type="text/css">#}
+{#    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.6-rc.0/css/select2.min.css" />#}
+{##}
+{#    <!-- This file stores project-specific CSS -->#}
+{#    <link href="{% static 'css/project.css' %}" rel="stylesheet">#}
+
+  <link rel="stylesheet" href="{% static '/css/bootstrap-4.5.2.css' %}" media="screen" type="text/css">
+  <link rel="stylesheet" href="{% static '/css/style.css' %}" media="screen" type="text/css">
+{#  <link href="{% static '/css/bootstrap-datepicker.css' %}" rel="stylesheet"/>#}
+
+  <! -- CSS BEGIN -->
+
+<style type="text/css">
+.form-style-6{
+	font: 95% Arial, Helvetica, sans-serif;
+	max-width: 100%;
+	margin: 10px auto;
+	padding: 16px;
+	background: #F7F7F7;
+}
+.form-style-6 h1{
+	background: #f28705;
+	padding: 20px 0;
+	font-size: 140%;
+	font-weight: 300;
+	text-align: center;
+	color: #fff;
+	margin: -16px -16px 16px -16px;
+}
+.form-style-6 input[type="text"],
+.form-style-6 input[type="date"],
+.form-style-6 input[type="datetime"],
+.form-style-6 input[type="email"],
+.form-style-6 input[type="number"],
+.form-style-6 input[type="search"],
+.form-style-6 input[type="time"],
+.form-style-6 input[type="url"],
+.form-style-6 textarea,
+.form-style-6 select
+{
+	-webkit-transition: all 0.30s ease-in-out;
+	-moz-transition: all 0.30s ease-in-out;
+	-ms-transition: all 0.30s ease-in-out;
+	-o-transition: all 0.30s ease-in-out;
+	outline: none;
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	background: #fff;
+	margin-bottom: 0%;
+	border: 1px solid #ccc;
+	padding: 20px;
+	color: #555;
+	font: 95% Arial, Helvetica, sans-serif;
+}
+.form-style-6 input[type="text"]:focus,
+.form-style-6 input[type="date"]:focus,
+.form-style-6 input[type="datetime"]:focus,
+.form-style-6 input[type="email"]:focus,
+.form-style-6 input[type="number"]:focus,
+.form-style-6 input[type="search"]:focus,
+.form-style-6 input[type="time"]:focus,
+.form-style-6 input[type="url"]:focus,
+.form-style-6 textarea:focus,
+.form-style-6 select:focus
+{
+	box-shadow: 0 0 5px #f28705;
+	padding: 20px;
+	border: 1px solid #f28705;
+}
+
+.form-style-6 input[type="submit"],
+.form-style-6 input[type="button"]{
+	box-sizing: border-box;
+	-webkit-box-sizing: border-box;
+	-moz-box-sizing: border-box;
+	width: 100%;
+	padding: 20px;
+	background: #f28705;
+	border-bottom: 2px solid #DB9307;
+	border-top-style: none;
+	border-right-style: none;
+	border-left-style: none;
+	color: #fff;
+}
+.form-style-6 input[type="submit"]:hover,
+.form-style-6 input[type="button"]:hover{
+	background: #F9C007;
+}
+.client_list_widget{
+  height:54px;
+}
+
+table {
+	margin-left: auto;
+	margin-right: auto;
+	font-size: 12px;
+	width: 100%;
+	table-layout:fixed;
+}
+
+td {
+	border: 0px solid black;
+	text-align: left;
+	padding: 10px;
+}
+</style>
+
+<! -- CSS END -->
+
+{% endblock %}
+
+{% block content %}
+
+{% if error_message %}<p class="alert alert-danger"><strong>{{ error_message }}</strong></p>{% endif %}
+
+<!--header section-->
+<section class="header-section" style="padding-top: 10px; padding-bottom: 10px;">
+    <div class="container">
+      <div class="brand-logo">
+          <a href="#"><img src="{% static '/img/logo.png' %}" alt="Judgement Search Network"></a>
+      </div>
+    </div>
+</section>
+<!--header section end-->
+
+  <!--search form section-->
+  <div class="form-style-6">
+    <h1>Start your search here.</h1>
+    <table>
+      <form action="{% url 'orders:order_new' %}" method="post">
+        {% csrf_token %}
+        <tr>
+          <td colspan="3"><h2>Client Information</h2></td>
+        </tr>
+        <tr>
+          <td>{{ form_client.client_name|addcss:"client_list_widget" }}</td>
+          <td><input type="text"  maxlength="20" id="{{ form_order.title_number.id_for_label }}" name="{{ form_order.title_number.html_name }}" placeholder="{{ form_order.title_number.label }}" required /></td>
+          <td><input type="text"  maxlength="100" id="{{ form_order.internal_tracking_num.id_for_label }}" name="{{ form_order.internal_tracking_num.html_name }}" placeholder="{{ form_order.internal_tracking_num.label }}" /></td>
+        </tr>
+      <!--
+        <tr>
+          <td colspan="3"><input type="submit" value="Create Order"/></td>
+        </tr>
+        -->
+        <tr>
+          <td colspan="3"><h2>Search Information</h2></td>
+        </tr>
+      {% for sn_form in formset_search_name %}
+        <tr>
+          <td><input type="text"  maxlength="100" id="{{ sn_form.first_name.id_for_label }}" name="{{ sn_form.first_name.html_name }}" placeholder="First Name (required) or Company Name entered below" /></td>
+          <td><input type="text"  maxlength="100" id="{{ sn_form.middle_name.id_for_label }}" name="{{ sn_form.middle_name.html_name }}" placeholder="Middle Name" /></td>
+          <td><input type="text"  maxlength="100" id="{{ sn_form.last_name.id_for_label }}" name="{{ sn_form.last_name.html_name }}" placeholder="Last Name (required) or Company Name entered below" /></td>
+        </tr>
+        <tr>
+          <td colspan="3"><input type="text" maxlength="100" id="{{ sn_form.company_name.id_for_label }}" name="{{ sn_form.company_name.html_name }}" placeholder="Company Name (Required) or Search Name entered above" /></td>
+        </tr>
+        <tr>
+          <td>Date From:<br/><br/><input type="date" id="{{ sn_form.search_from.auto_id }}" name="{{ sn_form.search_from.html_name }}" value="{{ two_decades_prior }}"/></td>
+          <td>Date To:<br/><br/><input type="date" id="{{ sn_form.search_to.auto_id }}" name="{{ sn_form.search_to.html_name }}" value="{{ todays_date }}"/></td>
+          <!-- <td>Date To:<br/> <br/><input type="date" name="date_to" placeholder="5/5/2022"/></td> -->
+        </tr>
+        <tr>
+          <td><input type="checkbox" id="{{ sn_form.high_value_search.id_for_label }}" name="{{ sn_form.high_value_search.html_name }}"/> Run a High Value Search</td>
+        </tr>
+        <!--
+        <tr>
+          <td colspan="3"><h2>Additional Details</h2></td>
+        </tr>
+        <tr>
+          <td colspan="2"><input type="email" name="receipt_email" placeholder="Email Address for Receipt"/></td>
+          <td><input type="text" name="client_phone" placeholder="Your Phone Number"/></td>
+        </tr>
+        <tr>
+          <td colspan="3"><textarea name="field3" placeholder="Type your Message"></textarea></td>
+        </tr>
+        -->
+      {% endfor %}
+      {{ formset_search_name.management_form }}
+        <tr>
+          <td colspan="3"><input type="submit" value="Create Order"/></td>
+        </tr>
+        <tr>
+          <div class="col-md-6" style="display:none">
+          <div class="row mb-3">
+            <label class="control-label col-sm-6 mb-0">Order Method:</label>
+            <div class="col-sm-6">
+                <select class="form-control cstm-control" id="id_form_order-order_method" name="form_order-order_method" required="">
+                  <option value="EM" selected="selected">Email</option>
+                  <option value="TL">Telephone</option>
+                  <option value="WB">Web Services</option>
+                </select>
+            </div>
+          </div>
+          </div>
+        </tr>
+      </form>
+    </table>
+  </div>
+
+
+{% endblock content %}
+

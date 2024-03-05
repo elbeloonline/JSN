@@ -1,0 +1,28 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Results Comparison{% endblock %}
+
+{% block content %}
+  {% if order_id %}
+    <h4>This will compare JSN results to CJ or State results, and provide an updated spreadsheet.</h4>
+    <h4>Attach the PDF with these results below and click Submit to complete the process.</h4>
+    <div>The compiled .xlsx file will be downloaded automatically</div>
+    <div style="margin-top:50px"></div>
+    <form action="{% url 'pdftools:cj_comparison' %}" method="post" enctype="multipart/form-data">
+      {% csrf_token %}
+      <p>
+        <h5>Choose Charles Jones File:</h5>
+        <input type="file" name="cj_file" />
+      </p>
+      <p>
+        <h5>Choose State Capital File:</h5>
+        <input type="file" name="sc_file" />
+      </p>
+      <p style="margin-top:50px;">
+        <input type="submit" />
+      </p>
+      <input type="hidden" name="order_id" value="{{ order_id }}">
+    </form>
+  {% endif %}
+{% endblock content %}

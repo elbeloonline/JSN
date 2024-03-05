@@ -1,0 +1,63 @@
+from __future__ import print_function
+
+import time
+
+from django.core.management.base import BaseCommand, CommandError
+from pacerscraper.models import PacerBankruptcyIndexCase
+
+# from orders.utils import OrderUtils
+from pacerscraper.utils import PacerScraperValidator
+
+
+class Command(BaseCommand):
+    help = 'Populates the database from the pacer system using a specified date range'
+    # python manage.py checkcasecountsfromindexfile jsnetwork_project/media/pacer_bankruptcy_idx/
+
+    def add_arguments(self, parser):
+        parser.add_argument('case_file_dir', type=str)
+
+    def _report_to_mysql_date(self, date_str):
+        splits = date_str.split('/')
+        return '{}-{:02d}-{:02d}'.format(splits[2], int(splits[0]), int(splits[1]))
+
+    def _find_case_index_files(self, dir):
+        import os
+        case_index_files = []
+        for root, dirs, files in os.walk(dir):
+            for filename in files:
+                file_size = os.path.getsize(os.path.join(dir,filename))
+                if file_size > 30000:
+                    case_index_files.append(filename)
+        return case_index_files
+
+    def handle(self, *args, **options):
+        start = time.time()
+        # change this to walk a directory; build internal dict and order output as a report
+        #
+        if options['case_file_dir']:
+            # case_file_str = options['case_file']
+            # from_date_str, to_date_str = PacerScraperValidator.get_bankruptcy_index_report_period(case_file_str)
+            # print("{} --- {}".format(from_date_str, to_date_str))
+            # mysql_from_date = self._report_to_mysql_date(from_date_str)
+            # mysql_to_date = self._report_to_mysql_date(to_date_str)
+            # # print('Converted date: {}'.format(mysql_from_date))
+            # index_cases = PacerBankruptcyIndexCase.objects\
+            #     .filter(date_filed__gte=mysql_from_date)\
+            #     .filter(date_filed__lte=mysql_to_date)
+            # file_case_count = PacerScraperValidator.check_index_file_case_count(case_file_str)
+            # print("Cases found in database and in index file: {} vs {}"
+            #       .format(index_cases.count(), file_case_count))
+
+            case_file_dir = options['case_file_dir']
+            case_index_files = self._find_case_index_files(case_file_dir)
+            for case_file_str in case_index_files:
+                from_date_str, to_date_str = PacerScraperValidator.get_bankruptcy_index_report_period(case_file_str)
+                mysql_from_date = self._report_to_mysql_date(from_date_str)
+                mysql_to_date = self._report_to_mysql_date(to_date_str)
+                # print('Converted date: {}'.format(mysql_from_date))
+                index_cases = PacerBankruptcyIndexCase.objects\
+                    .filter(date_filed__gte=mysql_from_date)\
+                    .filter(date_filed__lte=mysql_to_date)
+                file_case_count = PacerScraperValidator.check_index_file_case_count(case_file_str)
+                print("{} --- {} - Cases found in database and in index file: {} vs {}"
+                      .format(from_date_str, to_date_str, index_cases.count(), file_case_count))

@@ -1,0 +1,189 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Order List{% endblock %}
+
+{%  block css %}
+  {{ block.super }}
+    <!-- DataTables -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+    .btn-primary btn-sm {
+      color: #ffffff
+    }
+    </style>
+{%  endblock css %}
+
+
+{% block content %}
+
+<p>
+  <a class="btn btn-primary" href="{% url 'orders:order_new' %}" role="button">Add a new order</a>
+  <a class="btn btn-info" href="{% url 'orders:search_prev' %}" role="button">Search prev order</a>
+</p>
+
+<div class="card">
+{#  <div class="card-header">#}
+{#    Options for latest orders:#}
+{#  </div>#}
+  <div class="card-body">
+{#    <div style="padding-bottom:10px;"><a href="#" class="btn btn-info">Merge Selected</a></div>#}
+    {% if latest_order_list %}
+        <table id="ordertable" class="table table-striped">
+        <thead>
+            <tr>
+                <th></th>
+                <th>Order time</th>
+                <th width="30%">Order details</th>
+                <th>Reporting/order options</th>
+            </tr>
+        </thead>
+        {% for order in latest_order_list %}
+            <tr valign="middle">
+                <td><input type="checkbox" name="checks[]" value="{{ order.id }}" /></td>
+                <td style="padding-right: 1em">
+                    {{ order.created|date:'Y-m-d H:i' }}
+                </td>
+
+                <td>{{ order.client.client_name }} -
+
+                  <a data-toggle="tooltip" data-placement="top" title="{% for searchname in order.searchname_set.all %}{{ searchname }} {% endfor %}" href="{% url 'orders:detail' order.id %}">
+                    {{ order.title_number }}
+                    {% if order.internal_tracking_num %}[{{ order.internal_tracking_num }}]{% endif %}
+                  </a>
+                </td>
+                <td>
+                  {% with order.generatedreport_set.all|first as rs %}
+                    {% if 'Y' in rs.name_select_ready %}
+                      <a class="btn btn-primary btn-sm" href="{% url 'orders:name_select' order.id %}">NAMES</a>
+                      |
+                    {% endif %}
+                    {% if rs.merged_report_filename %}
+                      <a class="btn btn-primary btn-sm" href="{% url 'orders:view_report' rs.merged_report_filename %}">FULL</a>
+                    {% else %}
+                      <a class="btn btn-secondary btn-sm" href="#">FULL</a>
+                    {% endif %}
+                    {% if rs.state_filename %}
+                      <div class="btn-group" role="group">
+                        <button id="btnGroupDropExcel" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                          EXCEL
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="btnGroupDropExcel">
+                          <a class="dropdown-item" href="{% url 'orders:csv_report' order.id %}">JSN Only</a>
+                          {% if rs.state_hv_filename %}
+                            <a class="dropdown-item" href="{% url 'orders:csv_report_high_value' order.id%}">JSN Only High Value</a>
+                          {% endif %}
+                          <a class="dropdown-item" href="{% url 'pdftools:results_comparison' order.id %}">Comparison</a>
+                        </div>
+                      </div>
+                    {% endif %}
+                    <a href="{% url 'orders:run_search' order.id 'full' %}" data-regenratereport="true"><i class="fa fa-refresh"></i></a>
+                    |
+                    {% if rs.state_filename %}
+                      {% if "," in rs.state_filename %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:merge_and_view' order.id 'state_report' %}">SC</a>
+                      {% else %}
+
+                        {% if rs.state_hv_filename %}
+                          <div class="btn-group" role="group">
+                            <button id="btnGroupDropSC" type="button" class="btn btn-primary btn-sm dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                              SC
+                            </button>
+                            <div class="dropdown-menu" aria-labelledby="btnGroupDropSC">
+                              <a class="dropdown-item" href="{% url 'orders:view_report' rs.state_filename %}">Regular Report</a>
+                              <a class="dropdown-item" href="{% url 'orders:view_report' rs.state_hv_filename %}">High Value Report</a>
+                            </div>
+                          </div>
+                        {% else %}
+                            <a class="btn btn-primary btn-sm" href="{% url 'orders:view_report' rs.state_filename %}">SC</a>
+                        {% endif %}
+
+
+                      {% endif %}
+                    {% else %}
+                      <a class="btn btn-secondary btn-sm" href="#">SC</a>
+                    {% endif %}
+                    <a href="{% url 'orders:run_search' order.id 'state_report' %}" data-regenratereport="true"><i class="fa fa-refresh"></i></a>
+                    |
+                    {% if rs.bankruptcy_filename %}
+                      {% if "," in rs.bankruptcy_filename %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:merge_and_view' order.id 'bankruptcy' %}">BK</a>
+                      {% else %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:view_report' rs.bankruptcy_filename %}">BK</a>
+                      {% endif %}
+                    {% else %}
+                      <a class="btn btn-secondary btn-sm" href="#">BK</a>
+                    {% endif %}
+                    <a href="{% url 'orders:run_search' order.id 'bankruptcy' %}" data-regenratereport="true"><i class="fa fa-refresh"></i></a>
+                    |
+                    {% if rs.usdc_filename %}
+                      {% if "," in rs.usdc_filename %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:merge_and_view' order.id 'usdc' %}">US</a>
+                      {% else %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:view_report' rs.usdc_filename %}">US</a>
+                      {% endif %}
+                    {% else %}
+                      <a class="btn btn-secondary btn-sm" href="#">US</a>
+                    {% endif %}
+                    <a href="{% url 'orders:run_search' order.id 'usdc' %}" data-regenratereport="true"><i class="fa fa-refresh"></i></a>
+                    |
+                    {% if rs.patriot_filename %}
+                      {% if "," in rs.patriot_filename %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:merge_and_view' order.id 'patriot' %}">PT</a>
+                      {% else %}
+                        <a class="btn btn-primary btn-sm" href="{% url 'orders:view_report' rs.patriot_filename %}">PT</a>
+                      {% endif %}
+                    {% else %}
+                      <a class="btn btn-secondary btn-sm" href="#">PT</a>
+                    {% endif %}
+                    <a href="{% url 'orders:run_search' order.id 'patriot' %}" data-regenratereport="true"><i class="fa fa-refresh"></i></a>
+                    {% if rs.merged_report_filename %}
+                      |
+                      <a class="btn btn-dark btn-sm" href="{% url 'orders:reorder' order.id %}" data-reorderreport="true">Order Cont.</a>
+                    {% endif %}
+                  {% endwith %}
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    {% else %}
+        <p>No orders are available.</p>
+    {% endif %}
+  </div>
+
+</div>
+
+{% endblock content %}
+
+{% block custom-javascript %}
+  {{ block.super }}
+    <script>
+      $(function () {
+        $('[data-toggle="tooltip"]').tooltip()
+      })
+    </script>
+    <script>
+      var table = $('#ordertable').DataTable({
+        "drawCallback": function( settings ) {
+          $('[data-toggle="tooltip"]').tooltip()
+        },
+        "language": {
+          "search": "Filter orders:"
+        },
+        "order": [[ 0, "desc" ]]
+      });
+    </script>
+    <script>
+      // https://stackoverflow.com/questions/25329508/use-simple-javascript-to-confirm-deletion-in-django
+      $('*[data-regenratereport="true"]').on('click', function() {
+        return confirm("Are you sure you want to (re)generate this report?");
+      });
+      $('*[data-reorderreport="true"]').on('click', function() {
+        return confirm("This will place a reorder for this order. Are you sure you sure?");
+      });
+    </script>
+{% endblock custom-javascript %}

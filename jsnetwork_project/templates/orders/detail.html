@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Order Detail{% endblock %}
+
+{% block content %}
+    <h3>Details for order number {{ order_id }}</h3>
+    <p>Search nam{{ search_names|pluralize:"e,es" }}:
+        {{ search_names|join:" , " }}
+    </p>
+    <p>Client file number: {{ title_number }}</p>
+    <p>Internal tracking number: {{ internal_tracking_num }}</p>
+    <p>Created on: {{ created }}</p>
+    {% if is_reorder %}
+      <div class="alert alert-info" role="alert">
+        This order is a reorder.
+      </div>
+    {% endif %}
+{% endblock content %}

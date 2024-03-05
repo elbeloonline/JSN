@@ -1,0 +1,18 @@
+NAME="django_cookiecutter_ubuntu"                    # Name of the application
+NUM_WORKERS=3   
+USER=bitnami
+GROUP=bitnami
+DJANGO_SETTINGS_MODULE=config.settings.production
+DJANGO_WSGI_MODULE=config.wsgi 
+#LOGFILE=/home/bitnami/apps/django/django_projects/jsnetwork_project/log/hello.log
+#LOGDIR=$(dirname $LOGFILE)
+
+#test -d $LOGDIR || mkdir -p $LOGDIR
+
+exec gunicorn ${DJANGO_WSGI_MODULE}:application \
+#        --name $NAME \
+        --workers $NUM_WORKERS \
+#       --user=$USER --group=$GROUP \
+        --log-level=debug \
+        --bind=0.0.0.0:8000
+#        --log-file=$LOGFILE

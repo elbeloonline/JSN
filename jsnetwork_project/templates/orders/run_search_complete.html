@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Name search complete{% endblock %}
+
+{% block js %}
+
+{% endblock js %}
+
+{%  block css %}
+    <!-- Latest compiled and minified Bootstrap 4 Alpha 4 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <!-- This file stores project-specific CSS -->
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+
+
+{%  endblock css %}
+
+{% block content %}
+    <div>
+        {% if debug_message %}
+            {{ debug_message }}
+        {%  endif %}
+    </div>
+    <div>Bankruptcy matches count: {{ num_bk_cases }} </div>
+    {% for matched_case in bankruptcy_cases %}
+        <div>{{ matched_case.case_number }}:
+            {% for matched_name in matched_case.name_list %}
+                {{ matched_name }},
+            {% endfor %}
+        </div>
+    {%  endfor %}
+
+{% endblock content %}
+

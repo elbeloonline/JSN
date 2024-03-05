@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block title %}Name Select{% endblock %}
+
+{% block content %}
+  <h2>Select names to include in final report</h2>
+
+  <div class="container">
+    <form action="{% url 'orders:name_select_view_pdf' %}" method="post">
+      {% csrf_token %}
+
+      {% for name_match in unique_names %}
+        <div class="form-group row">
+          <input type="checkbox" name="selected_name" value="{{ name_match }}" checked /> {{ name_match }}
+        </div>
+      {% endfor %}
+      <input type="hidden" name="order_id" value="{{ order_id }}" />
+      <input type="submit" value="Submit">
+    </form>
+  </div>
+
+{% endblock content %}

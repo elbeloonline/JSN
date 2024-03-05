@@ -1,0 +1,263 @@
+from models import Case, Comment, StateClosingsReport, Judgment, Debt, Party, PartyAlt, PartyGuardian
+
+from django.test import TestCase
+
+
+class ClosingsReportModelTests(TestCase):
+    def test_create_layout_dict(self):
+        s = StateClosingsReport()
+        d = s.get_model_layout_dict()
+        filler_field_size = 8
+        self.assertEqual(d.get('filler'), filler_field_size)
+
+
+class CommentModelTests(TestCase):
+
+    def test_create_model_layout_dict(self):
+        comment_model = Comment()
+        d = comment_model.get_model_layout_dict()
+        filler_field_size = 21
+        self.assertEqual(d.get('filler'), filler_field_size)
+
+    def test_comment_case_fk(self):
+        case_model = Case()
+        comment_model = Comment()
+        case_title = "Test case in the people's court"
+        case_model.case_title = case_title
+        comment_model.case = case_model
+        self.assertEqual(case_title, comment_model.case.case_title)
+
+
+class JudgmentModelTests(TestCase):
+
+    def test_create_model_layout_dict(self):
+        judgment_model = Judgment()
+        d = judgment_model.get_model_layout_dict()
+        filler_field_size = 29
+        self.assertEqual(d.get('filler'), filler_field_size)
+
+    def test_judgment_case_fk(self):
+        case_model = Case()
+        judgment_model = Judgment()
+        case_title = "Test case in the citizen's court"
+        case_model.case_title = case_title
+        judgment_model.case = case_model
+        self.assertEqual(case_title, judgment_model.case.case_title)
+
+
+class DebtModelTests(TestCase):
+
+    def test_create_model_layout_dict(self):
+        debt_model = Debt()
+        d = debt_model.get_model_layout_dict()
+        filler_field_size = 44
+        self.assertEqual(d.get('filler2'), filler_field_size)
+
+    def test_debt_case_fk(self):
+        case_model = Case()
+        debt_model = Judgment()
+        case_title = "Test case 939AJ112"
+        case_model.case_title = case_title
+        debt_model.case = case_model
+        self.assertEqual(case_title, debt_model.case.case_title)
+
+
+class PartyModelTests(TestCase):
+
+    def test_create_party_model_layout_dict(self):
+        party_model = Party()
+        d = party_model.get_model_layout_dict()
+        field_layout_item_count = 35
+        self.assertEqual(len(d), field_layout_item_count)
+
+    def test_create_partyalt_model_layout_dict(self):
+        party_model = PartyAlt()
+        d = party_model.get_model_layout_dict()
+        field_debt_number_alt = 3
+        self.assertEqual(d.get('debt_number_partyalt'), field_debt_number_alt)
+
+    def test_create_partyguardian_model_layout_dict(self):
+        party_model = PartyGuardian()
+        d = party_model.get_model_layout_dict()
+        layout_field_len = 3
+        self.assertEqual(d.get('guardian_affiliation_code'), layout_field_len)
+
+
+class StateReportDataLoaderTests(TestCase):
+
+    def setUp(self):
+        from statereport.models import StateReportDataLoader
+        # loader = StateReportDataLoader("FFSITE.TAPE.Y2010")
+        loader = StateReportDataLoader("JDC0503_YrEnd_20100515-small.TXT")
+        loader.import_file_to_db(num_lines=5000)
+
+    def _make_test_first_name_list(self):
+        from statereport.models import StateReportQueryManager
+        return StateReportQueryManager.make_first_name_variations('leroy')
+
+    def test_parties_loaded_from_state_report_file(self):
+        qs = Party.objects.all()
+        self.assertGreater(qs.count(), 0)
+
+    def test_query_state_report_party_first_name(self):
+        name_list = self._make_test_first_name_list()
+        qs = Party.objects.filter(party_first_name__in=name_list)
+        self.assertGreater(qs.count(), 0)
+
+    def test_query_from_order_party_first_name_list(self):
+        from statereport.models import StateReportQueryManager
+
+        name_list = self._make_test_first_name_list()
+        cases = StateReportQueryManager.query_database_for_order(party_first_name_list=name_list)
+        self.assertIsNotNone(cases)
+        for case in cases:
+            print("case: {}".format(case.acms_docket_number))
+
+    def test_query_from_order_party_first_name(self):
+        from statereport.models import StateReportQueryManager
+        searchname = self._make_searchname_from_submission(first_name='Leroy')
+        cases = StateReportQueryManager.query_database_by_searchname_details(searchname)
+        self.assertTrue(cases)
+        for case in cases:
+            print("case: {}".format(case.acms_docket_number))
+
+    def test_query_from_order_party_first_and_last_name(self):
+        from statereport.models import StateReportQueryManager
+        searchname = self._make_searchname_from_submission(first_name='Leroy', last_name='banks')
+        cases = StateReportQueryManager.query_database_by_searchname_details(searchname)
+        self.assertTrue(cases)
+        self.assertEqual(len(cases), 1)
+        for case in cases:
+            print("case: {}".format(case.acms_docket_number))
+
+    def _make_searchname_from_submission(self, first_name, last_name=None, middle_name=None,
+                                         search_from=None, search_to=None):
+        from orders.models import SearchName
+        searchname = SearchName()
+        searchname.first_name = first_name
+        if middle_name is not None:
+            searchname.middle_name = middle_name
+        if last_name is not None:
+            searchname.last_name = last_name
+        if search_from is not None:
+            searchname.search_from = search_from
+        if search_to is not None:
+            searchname.search_to = search_to
+
+        return searchname
+
+    def test_query_from_order_party_full_name(self):
+        from statereport.models import StateReportQueryManager
+        searchname = self._make_searchname_from_submission(first_name='Leroy', last_name='banks', middle_name='E')
+        cases = StateReportQueryManager.query_database_by_searchname_details(searchname)
+        self.assertTrue(cases)
+        self.assertEqual(len(cases), 1)
+        for case in cases:
+            # print("case and date: {} - {}".format(case.acms_docket_number, case.case_filed_date))
+            judgment_number = case.docketed_judgment_number.replace(' ','-')
+            print("Judgment number: {}-{}{}".format(judgment_number, case.docketed_judgment_cc,
+                                                    case.docketed_judgment_yy))
+            print("Case number: {}".format(case.acms_docket_number))
+            print("Date entered: {}".format(case.case_filed_date))
+            # print("Report from: {}".format(case.report_from_date))
+            # print("Report to: {}".format(case.report_to_date))
+            print("Type of action: {}".format(case.case_type_code))
+            print("Venue: {}".format(case.venue_id))
+            #
+            for debt in case.debt_set.all():
+                print("Debt due: {}".format(debt.party_due_amt))
+                # print("Debt orig: {}".format(debt.party_orig_amt))
+                print("Debt other award due amount: {}".format(debt.party_other_awd_due_amt))
+                print("Debt other atty fees : {}".format(debt.party_due_atty_fee_amt))
+            for party in case.party_set.all():
+                # figure out party type
+                if isinstance(party, PartyAlt):
+                    party_type = "Party Alt"
+                elif isinstance(party, PartyGuardian):
+                    party_type = "Party Guardian"
+                elif isinstance(party, Party):
+                    party_type = "Normal Party"
+                else:
+                    party_type = "Unknown Party Type"
+
+                print("Found party of type {}".format(party_type))
+                party_type = party.party_role_type_code
+                if party_type == "C":
+                    party_type_long = "Creditor(s):"
+                else:
+                    party_type_long = "Debtor(s):"
+                print(party_type_long + " {} {}".format(party.party_first_name, party.party_last_name))
+                print("Attorney first name: {}".format(party.atty_firm_first_name))
+                print("Attorney last name: {}".format(party.atty_firm_last_name))
+
+    def test_query_from_order_party_name_and_date(self):
+        from statereport.models import StateReportQueryManager
+        from orders.models import SearchName
+        # searchname = SearchName()
+        # searchname.first_name = 'Leroy'
+        # searchname.last_name = 'banks'
+        # searchname.search_from = '01/01/2010'
+        # searchname.search_to = '01/01/2017'
+        searchname = self._make_searchname_from_submission(first_name='Leroy', last_name='banks',
+                                                           search_from='01/01/2010', search_to='01/01/2017')
+        cases = StateReportQueryManager.query_database_by_searchname_details(searchname)
+        self.assertTrue(cases)
+        self.assertEqual(len(cases), 1)
+        for case in cases:
+            print("case: {}".format(case.acms_docket_number))
+
+    def test_query_from_order_party_full_name_with_xml_output(self):
+        from statereport.models import StateReportQueryManager
+        from orders.models import SearchName
+        from nameviewer.printfactory import PrintFactory
+        import os.path
+
+        searchname = SearchName()
+        searchname.first_name = 'LEROY'
+        searchname.last_name = 'WALLACE'
+        # searchname = self._make_searchname_from_submission(first_name='LEROY', last_name='BANKS')
+        cases = StateReportQueryManager.query_database_by_searchname_details(searchname)
+        self.assertTrue(cases)
+        self.assertEqual(len(cases), 1)
+        # make XML output for report
+        p = PrintFactory()
+        case_xml_filename = 'case_report_template.xml'
+        for case in cases:
+            # print("case and date: {} - {}".format(case.acms_docket_number, case.case_filed_date))
+            case_xml = p.make_xml(case)
+            # print(case_xml)
+            xml_filepath = p.dump_xml_to_file(case_xml, case_xml_filename)
+        self.assertTrue(os.path.isfile(xml_filepath))
+
+    def test_remote_doc_gen(self):
+        from django.conf import settings
+        from nameviewer.windward import WindwardRestEngine
+
+        import os.path
+
+        base_uri = settings.WINDWARD_ENGINE_URL
+        # template = os.path.join('.', 'jsnetwork_project', 'media', 'Case Report Template.docx')
+        template = os.path.join('.', 'jsnetwork_project', 'Case Report Template.docx')
+        xml_data = os.path.join('.', 'jsnetwork_project', 'media', 'case_report_template.xml')
+        report_name = os.path.join('.', 'jsnetwork_project', 'media', 'case_report.pdf')
+        if os.path.isfile(template):
+            os.remove(template)
+            os.remove(report_name)
+        report_engine = WindwardRestEngine(base_uri, template, xml_data, report_name)
+        report_engine.make_report()
+
+        self.assertTrue(os.path.exists(report_name))
+
+    def test_remote_doc_gen2(self):
+        from nameviewer.windward import WindwardReportEngine2
+        import os.path
+
+        base_uri = 'http://ec2-34-224-57-184.compute-1.amazonaws.com:8080'
+        template = os.path.join('.', 'jsnetwork_project', 'media', 'Case Report Template.docx')
+        xml_data = os.path.join('.', 'jsnetwork_project', 'media', 'case_report_template.xml')
+        if os.path.isfile(template):
+            os.remove(template)
+        report_engine = WindwardReportEngine2()
+        # report_engine.make_report()
+
+        self.assertTrue(os.path.exists(template))

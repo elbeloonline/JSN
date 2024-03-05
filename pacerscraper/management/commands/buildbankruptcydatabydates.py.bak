@@ -1,0 +1,34 @@
+from __future__ import print_function
+
+import time
+
+from django.core.management.base import BaseCommand, CommandError
+
+# from orders.utils import OrderUtils
+from pacerscraper.utils import PacerScraperBankruptcyUtils
+
+
+class Command(BaseCommand):
+    help = 'Populates the database from the pacer system using a specified date range'
+    # invoke with python manage.py buildbankruptcydata 1/1/14 1/31/14
+
+    def add_arguments(self, parser):
+        parser.add_argument('from_date', type=str)
+        parser.add_argument('to_date', type=str)
+
+    def handle(self, *args, **options):
+        from pyvirtualdisplay import Display
+        display = Display(visible=0, size=(1024, 768))
+        display.start()
+        start = time.time()
+        # model operations
+        if options['from_date'] and options['to_date']:
+            from_date_str = options['from_date']
+            to_date_str = options['to_date']
+            bankruptcy_report_contents = \
+                PacerScraperBankruptcyUtils.query_and_archive_bankruptcy_report(from_date_str, to_date_str)
+            print("Bankruptcy file generated: {}".format(bankruptcy_report_contents.archive_file))
+            PacerScraperBankruptcyUtils.build_bankruptcy_index_report_from_local_file(bankruptcy_report_contents.archive_file)
+        executiontime = time.time() - start
+        self.stdout.write(self.style.SUCCESS("Done! Total elapsed time: {:.2f} seconds".format(executiontime)))
+        display.stop()

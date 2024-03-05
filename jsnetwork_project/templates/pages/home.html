@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+            <h1>Judgment Search Network</h1>
+            <p class="lead">Providing search data for the NJ Superior court
+                along with the US district and bankruptcy courts.</p>
+            {% if user.is_authenticated %}
+                <div>To get started, click the Orders link in the menu above to add a new order.</div>
+                {% if perms.orders.add_order %}
+                    <div>Or, you can browse the name search database by clicking on the name view link.</div>
+                    <div>Settings related to how searches are generated can be <a href="orders/settings">found here</a>.</div>
+                {% endif %}
+                {% if perms.orders.add_userclient %}
+                  <div>User-client options are available via the User/Client Mgmt menu.</div>
+                  <div>This allows you to create new user logins and associate those users with one or more client accounts.</div>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </div>
+  {% if user.is_authenticated %}
+  <div>&nbsp;</div>
+    <div class="row">
+        <div class="col-md-6 offset-md-3">
+          <h5>Latest Updates</h5>
+          <dt>(2018-10-29)</dt>
+          <dd>Searches now include more name variations, may result in slightly longer search times</dd>
+          <dd>[new] PDFs show exact matches first and variations next, grouping by amount within each bucket.</dd>
+          <dd>[new] PDFs are downloaded to your disk instead of being displayed in the browser to prevent confusion with having to hit the back button.</dd>
+          <dd>[new] Orders will display a confirmation dialog before being submit.</dd>
+          <dd>[new] Non-admin users will now have their order automatically added to the search queue after submitting their names.</dd>
+          <dd>Better handling of three name searches</dd>
+          <dd>Less results are returned where the last name 'Ward' might return 'Howard' when alternate party matches are found</dd>
+        </div>
+    </div>
+  {% endif %}
+{% endblock content %}

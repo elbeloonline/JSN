@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+{% load render_table from django_tables2 %}
+{% load static %}
+{% load widget_tweaks %}
+
+{% block title %}Namesearch Viewer{% endblock %}
+
+{% block js %}
+
+{% endblock js %}
+
+{%  block css %}
+    <!-- Latest compiled and minified Bootstrap 4 Alpha 4 CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-alpha.4/css/bootstrap.min.css" integrity="sha384-2hfp1SzUoho7/TsGGGDaFdsuuDL0LX2hnUp6VkX3CUQ2K4K+xjboZdsXyp4oUHZj" crossorigin="anonymous">
+
+    <!-- Your stuff: Third-party CSS libraries go here -->
+    <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+
+    <!-- This file stores project-specific CSS -->
+    <link href="{% static 'css/project.css' %}" rel="stylesheet">
+
+    <!-- DataTables -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+
+
+{%  endblock css %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-6">
+            <h4>Search for a name:</h4>
+            {{ search_form.non_field_errors }}
+            <form action="{%  url 'nameviewer:index' %}" method="get">
+                <div>
+                    <label for="id_rad_0"><input type="radio" id="id_rad_0" value="forename"
+                                                {% if rad != "surname" %} {{ "checked" }} {% endif %}
+                                                 name="rad" /> Forname</label>
+                </div>
+                <div>
+                    <label for="id_rad_1"><input type="radio" id="id_rad_1" value="surname"
+                                                {% if rad == "surname" %} {{ "checked" }} {% endif %}
+                                                 name="rad" /> Surname</label>
+                </div>
+                <div>
+                    {{ filter.form }}
+                    <input type="text" name="second_name" placeholder="Optional second name" />
+                </div>
+                <div>
+                    <button type="submit">Submit</button>
+                </div>
+            </form>
+        </div>
+        <div class="col-md-6">
+            <table id="nametable" class="table table-striped">
+                <thead>
+                    <th>Name</th>
+                    <th>Name Match</th>
+                    <th>Score</th>
+                </thead>
+                {% for name_obj in filter.qs %}
+                <tr>
+                    <td>{{ name_obj.name }}</td>
+                    <td>{{ name_obj.name_match }}</td>
+                    <td>{{ name_obj.score }}</td>
+                </tr>
+                {% endfor %}
+            </table>
+        </div>
+    </div>
+    <div>
+        <!-- name match list if two entries were supplied -->
+        {% if matched_forenames %}
+            <div>Displaying all name matches:</div>
+            {% for name in name_combinations %}
+                <div>{{ name.0 }} {{ name.1 }}</div>
+            {%  endfor %}
+
+        {%  endif %}
+    </div>
+
+    {% block custom-javascript %}
+    <script>
+        $(document).ready(function() {
+            $('#nametable').DataTable({
+              "language": {
+                "search": "Filter records:"
+              }
+        });
+    } );
+    </script>
+    {% endblock %}
+
+{% endblock content %}
+

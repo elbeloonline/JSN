@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Client User List Editor{% endblock %}
+
+{%  block css %}
+  {{ block.super }}
+    <!-- DataTables -->
+    <link rel="stylesheet" href="//cdn.datatables.net/1.10.13/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+    <style>
+    .btn-primary btn-sm {
+      color: #ffffff
+    }
+    </style>
+{%  endblock css %}
+
+{% block content %}
+<div class="container">
+
+{% if clients %}
+  <div class="container">
+    <div class="row">
+      <div class="col-sm">
+        <h3>Clients List</h3>
+        <div><h6>(Select one of the following to manage their users.)</h6></div>
+        {% for client in clients %}
+          <div><a href="{% url 'usermgmt:client_edit' client.id %}">{{ client.client_name }}</a></div>
+{#          <div>foo</div>#}
+        {% endfor %}
+      </div>
+      <div class="col-sm">
+        {% block client_users %}
+        {% endblock %}
+      </div>
+    </div>
+  </div>
+{% endif %}
+
+
+
+</div>
+{% endblock content %}
+

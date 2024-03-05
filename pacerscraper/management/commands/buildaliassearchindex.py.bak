@@ -1,0 +1,39 @@
+from __future__ import print_function
+
+import logging
+import time
+
+from django.core.management.base import BaseCommand, CommandError
+from pacerscraper.models import PacerBankruptcyIndexCase
+
+from pacerscraper.utils import PacerScraperBankruptcyUtils, PacerScraperPartyBuilder
+
+
+class Command(BaseCommand):
+    help = 'Populates the party index with names so that it is searchable in database'
+    # python manage.py checkcasecounts 2017-01-01 2017-01-31 0f5ba5ec-238d-4ff1-b0b4-6de512dbf58f.html
+
+    def handle(self, *args, **options):
+        import os
+        start = time.time()
+        case_count = 0
+        bankruptcy_files_dir = PacerScraperBankruptcyUtils.bankruptcy_files_dir
+        from pacerscraper.utils import PacerScraperPartyBuilder
+        cases = PacerBankruptcyIndexCase.objects.filter(pacerbankruptcyparty__isnull=True).\
+                    filter(alias_file_processed__exact='N')
+        for case in cases:
+            try:
+                if os.path.exists(os.path.join(bankruptcy_files_dir, case.alias_file)):
+                    print('Found alias file for case {}'.format(case))
+                    alias_list = PacerScraperPartyBuilder.\
+                        build_alias_list_from_alias_file(case.alias_file)
+                    for alias in alias_list:
+                        PacerScraperPartyBuilder.save_bankruptcy_alias(case, alias)
+                    # update the record to show the aliases have been processed
+                    case.alias_file_processed = 'Y'
+                    case.save()
+            except Exception as e:
+                    logging.error('Problem encountered while processing case: {}'.format(case.case_number))
+                    pass
+            case_count += 1
+        logging.info('Done! Processed {} cases'.format(case_count))
