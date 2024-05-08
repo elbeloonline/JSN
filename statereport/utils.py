@@ -134,13 +134,13 @@ class StateReportNameSearchUtils:
         lowest_name_match_score = 80
         # first names
         first_name_list = generate_forenames(searchname_first_name, lowest_name_match_score)
-        print_fname_list = [searchname_first_name.lower().decode('utf-8')]
+        print_fname_list = [searchname_first_name.lower()]
         for forename in first_name_list:
             print_fname_list.append(forename.name_match)
         # print_fname_list = tuple(print_fname_list)
         # last names
         last_name_list = generate_surnames(searchname_last_name, lowest_name_match_score)
-        print_lname_list = [searchname_last_name.lower().decode('utf-8')]
+        print_lname_list = [searchname_last_name.lower()]
         for surname in last_name_list:
             print_lname_list.append(surname.name_match)
         # print_lname_list = tuple(print_lname_list)

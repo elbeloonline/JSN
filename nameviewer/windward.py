@@ -107,7 +107,7 @@ class WindwardReportEngine2:
         :return:
         """
         # @TODO: move this into the settings config file
-        base_uri = 'http://ec2-34-224-57-184.compute-1.amazonaws.com:8080'
+        base_uri = 'http://localhost:8080/pdftools/make_pdf'
         template = os.path.join('.', 'jsnetwork_project', 'media', 'Case Report Template.docx')
         xml_filename = os.path.join('.', 'jsnetwork_project', 'media', 'case_report_template.xml')
         pdf_filename = os.path.join('.', 'jsnetwork_project', 'media', 'casereport')
@@ -303,7 +303,7 @@ class ReportFactory:
             print((tostring(top)))
             # xml_filepath = os.path.join(settings.MEDIA_ROOT, 'generatedpdfs', save_filename)
             xml_filepath = os.path.join(settings.MEDIA_ROOT, save_filename)
-            with open (xml_filepath, "w") as f:
+            with open (xml_filepath, "wb") as f:
                 f.write(tostring(top))
             print(("Wrote docket list XML to {}".format(xml_filepath)))
             return xml_filepath
@@ -524,14 +524,15 @@ class ReportFactory:
         from django.conf import settings
 
         base_uri = settings.WINDWARD_ENGINE_URL
-        template = os.path.join('.', 'jsnetwork_project', template_filename)
+        template = os.path.join('.', 'jsnetwork_project', 'media', template_filename)
         xml_data = []
         for x in case_xml_filenames:
             xml_data.append(os.path.join('.', 'jsnetwork_project', 'media', x))
         report_name = os.path.join('.', 'jsnetwork_project', 'media', pdf_filename)
         if os.path.isfile(template):
+            pass
             # os.remove(template)
-            os.remove(report_name)
+            # os.remove(report_name)
         report_engine = WindwardRestEngine(base_uri, template, xml_data,
                                            report_name, data_source_names)
         report_engine.make_report()

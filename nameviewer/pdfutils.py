@@ -78,17 +78,17 @@ class PdfMerger:
                 pdf_list.append(e)
             # pdf_list.append(e for e in x)
         if generated_reports.docket_list_filename:
-            if generated_reports.num_state_matches > 0 or generated_reports.num_bankruptcy_matches > 0 or generated_reports.num_usdc_matches > 0:
+            if int(generated_reports.num_state_matches or 0) > 0 or int(generated_reports.num_bankruptcy_matches or 0) > 0 or int(generated_reports.num_usdc_matches or 0) > 0:
                 pdf_list.append(generated_reports.docket_list_filename)
-        if generated_reports.state_filename and generated_reports.num_state_matches > 0:
+        if generated_reports.state_filename and int(generated_reports.num_state_matches or 0) > 0:
             x = generated_reports.state_filename.split(',')
             for e in x:
                 pdf_list.append(e)
-        if generated_reports.bankruptcy_filename and generated_reports.num_bankruptcy_matches > 0:
+        if generated_reports.bankruptcy_filename and int(generated_reports.num_bankruptcy_matches or 0) > 0:
             x = generated_reports.bankruptcy_filename.split(',')
             for e in x:
                 pdf_list.append(e)
-        if generated_reports.usdc_filename and generated_reports.num_usdc_matches > 0:
+        if generated_reports.usdc_filename and int(generated_reports.num_usdc_matches or 0) > 0:
             x = generated_reports.usdc_filename.split(',')
             for e in x:
                 pdf_list.append(e)

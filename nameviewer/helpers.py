@@ -179,7 +179,7 @@ def first_name_variations_from_db(first_name):
     name_match_score = get_name_match_score(score_type='FIRST_NAME')
     # first_name = asian_name_check(first_name)
     name_list = generate_forenames(first_name, name_match_score)
-    print_name_list = [first_name.lower().decode('utf-8')]
+    print_name_list = [first_name.lower()]
     for forename in name_list:
         print_name_list.append(forename.name_match)
     print('Matched first name names list: {}'.format(print_name_list))
@@ -204,7 +204,7 @@ def last_name_variations_from_db(last_name):
             # last_name = last_name.split('-')[0]
             last_name = clean_hyphenated_names(last_name)
     name_list = generate_surnames(last_name, name_match_score)
-    print_name_list = [last_name.lower().decode('utf-8')]
+    print_name_list = [last_name.lower()]
     for surname in name_list:
         print_name_list.append(surname.name_match)
     print('Matched Last name names list: {}'.format(print_name_list))

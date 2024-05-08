@@ -1272,7 +1272,7 @@ class PrintFactory:
         """
         import os
         xml_fullpath = os.path.join('.', 'jsnetwork_project', 'media', xml_filename)
-        xml_file = open(xml_fullpath, 'w')
+        xml_file = open(xml_fullpath, 'wb')
         xml_file.write(xml_doc)
         xml_file.close()
         return xml_fullpath
