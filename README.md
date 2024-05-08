@@ -13,3 +13,7 @@
     2. python manage.py migrate
 7. Create a super user and follow the steps on screen: python manage.py createsuperuser
 8. Execute the web server with: python manage.py runserver 8080
+## Execute report tasks
+1. Open a new terminal
+2. Run the following commnand: python manage.py process_tasks
+3. If the system detects any pending tasks, it will try to run them. The output should be reflected in the tasks window and the web server window
