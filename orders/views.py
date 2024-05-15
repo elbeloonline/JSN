@@ -1,16 +1,21 @@
 
 
+import base64
 from datetime import datetime
 import logging
 
+from django.http import HttpResponse, JsonResponse
 from django.shortcuts import get_object_or_404, render, redirect
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.forms import formset_factory
-
+from django.views.decorators.csrf import csrf_exempt
 from .models import Order, Client
 from .forms import SearchNameForm, OrderForm, ClientForm, QuickSearchForm
 from .utils import OrderUtils
+from xml.dom import minidom
+from pdftools.helpers import replace_coverpage, replace_docketreport, replace_patriot, replace_usdc, replace_bankruptcy
+
 
 @login_required
 def index(request):
@@ -540,5 +545,24 @@ def search_prev(request):
     return render(request, 'orders/search_prev.html', context)
 
 
-
-
+@csrf_exempt
+def xml_to_base64(request):
+    if request.method == 'POST' and request.FILES.get('file'):
+        xml_file = request.FILES['file']
+        xml_content = xml_file.read()
+        encoded_content = base64.b64encode(xml_content).decode('utf-8')
+        # Guardar el contenido codificado en la sesión para usarlo en la siguiente vista
+        selected_option = request.POST.get('option')
+        
+        if encoded_content:
+            template_name = selected_option
+            namesearch_data = base64.b64decode(encoded_content)
+            xml_data = minidom.parseString(namesearch_data)
+            
+            if template_name == 'BankruptcyReport':
+                response= replace_bankruptcy(xml_data)
+            return response
+        else:
+            pass
+    
+    return JsonResponse({'error': 'Invalid request'}, status=400)

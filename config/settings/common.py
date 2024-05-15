@@ -10,6 +10,7 @@ https://docs.djangoproject.com/en/dev/ref/settings/
 """
 
 
+import os
 import environ
 
 ROOT_DIR = environ.Path(__file__) - 3  # (jsnetwork_project/config/settings/common.py - 3 = jsnetwork_project/)
@@ -45,6 +46,7 @@ THIRD_PARTY_APPS = (
     'widget_tweaks', # add classes to tamplate fields
     'django_elasticsearch_dsl', # elasticsearch
     # 'django_elasticsearch_dsl_drf',
+    'whitenoise.runserver_nostatic', #Make sure to add this
 )
 
 # Apps specific for this project go here.
@@ -77,6 +79,7 @@ MIDDLEWARE = (
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware', #make sure to add this line
 )
 
 # MIGRATIONS CONFIGURATION
@@ -108,7 +111,7 @@ ADMINS = (
     ("""Kwan Skinner""", 'kskinner@gmail.com'),
 )
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['3.129.93.36', 'www.jsnenv.com', 'jsnenv.com', '*']
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
@@ -134,8 +137,8 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'jsnetwork',
         'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'PASSWORD': '1qw23er45t',
+        'HOST': '',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -273,6 +276,10 @@ TEMPLATES = [
 
 # See: http://django-crispy-forms.readthedocs.io/en/latest/install.html#template-packs
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
+
+
+BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # STATIC FILE CONFIGURATION
 # ------------------------------------------------------------------------------

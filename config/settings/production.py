@@ -9,7 +9,7 @@ Production Configurations
 
 
 from boto.s3.connection import OrdinaryCallingFormat
-from django.utils import six
+#from django.utils import six
 
 
 from .common import *  # noqa
@@ -19,7 +19,7 @@ from .common import *  # noqa
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#secret-key
 # Raises ImproperlyConfigured exception if DJANGO_SECRET_KEY not in os.environ
 SECRET_KEY = 'k@g%yzut8^q13gu0@1o4qihpe1k^c#rvr&+u^hk*dd76us(mwn' #env('DJANGO_SECRET_KEY')
-
+breakpoint()
 # This ensures that Django will be able to detect a secure connection
 # properly on Heroku.
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')

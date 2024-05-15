@@ -153,6 +153,16 @@
     {% else %}
         <p>No orders are available.</p>
     {% endif %}
+    <h1>Upload XML to generate report</h1>
+    <form action="{% url 'orders:xml_to_base64' %}" method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <select name="option" id="option">
+          <option value="BankruptcyReport">BankruptcyReport</option>
+        </select><br><br>
+        <input type="file" name="file" accept=".xml">
+        <button type="submit">Convert</button>
+        
+    </form>
   </div>
 
 </div>

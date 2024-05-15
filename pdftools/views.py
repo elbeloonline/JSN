@@ -1,5 +1,3 @@
-# -*- coding: utf-8 -*-
-
 
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render
@@ -13,7 +11,7 @@ import re, os
 import sys
 import subprocess
 
-from pdftools.helpers import replace_coverpage, replace_docketreport, replace_patriot, replace_usdc
+from pdftools.helpers import replace_coverpage, replace_docketreport, replace_patriot, replace_usdc, replace_bankruptcy
 
 # Create your views here.
 @login_required
@@ -47,6 +45,9 @@ def make_pdf(request):
             replace_docketreport(uri, xml_data)
         elif template_name == 'UsdcReport':
             replace_usdc(uri, xml_data)
+        elif template_name == 'BankruptcyReport':
+            replace_bankruptcy(uri, xml_data)
+
         
         # Convert word to pdf. Requires installing LibreOffice and adding the directory to PATH
         subprocess.run([
@@ -58,7 +59,6 @@ def make_pdf(request):
             os.path.join('.', 'jsnetwork_project', 'media'), 
             os.path.join('.', 'jsnetwork_project', 'media', f'generated_{template_name}.docx')
         ])
-            
         pdf_file = open(os.path.join('.', 'jsnetwork_project', 'media', f'generated_{template_name}.pdf'), 'rb')
         base64_data = base64.b64encode(pdf_file.read()).decode("utf-8")
         

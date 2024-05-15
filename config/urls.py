@@ -7,6 +7,8 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic import TemplateView
 from django.views import defaults as default_views
+from django.conf import settings # new
+from  django.conf.urls.static import static #new
 
 # fix problem with admin section being inacessible on production
 # https://github.com/pydanny/cookiecutter-django/issues/162
@@ -46,6 +48,9 @@ if settings.DEBUG:
         urlpatterns += [
             url(r'^__debug__/', include(debug_toolbar.urls)),
         ]
+
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_URL)
 
 # set properties on the admin site - no need to define a custom template any more
 # http://stackoverflow.com/questions/4938491/django-admin-change-header-django-administration-text

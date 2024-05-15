@@ -1,14 +1,22 @@
 
+import base64
 import os
 import tempfile
 from xml.dom.minicompat import NodeList
 import zipfile
+from django.http import HttpResponse
 from lxml import etree
 from docxtpl import DocxTemplate
 from xml.dom import minidom
 from datetime import date
 from docx import Document
 from copy import deepcopy
+from docx.shared import RGBColor
+import docxedit
+import time
+from django.conf import settings
+import subprocess
+from win32com import client
 
 def parse_matches(document: Document, context):
     matches = []
@@ -95,7 +103,6 @@ def replace_context(document: Document, template_name, context):
     
     #Iterate all paragraphs
     paragraphs = list(document.paragraphs)
-
     docket_paragraphs = []
     #Paragraphs in docket list
     p_index = 0
@@ -150,7 +157,6 @@ def replace_context(document: Document, template_name, context):
         p_index += 1
     
     docket_paragraphs += copied_paragraphs
-    
     if template_name == 'DocketReport':    
         for i in range(len(docket_paragraphs)):
             print(docket_paragraphs[i].text)
@@ -478,8 +484,139 @@ def replace_usdc(uri, xml_data: minidom.Document):
     document = Document(uri)
     replace_context(document, 'UsdcReport', context)
     document.save(os.path.join(".",'jsnetwork_project','media',f'generated_UsdcReport.docx'))
+
+def replace_bankruptcy(xml_data: minidom.Document):
+    client_ref_num = xml_data.getElementsByTagName('CLIENT_REF_NUM')[0].firstChild.nodeValue
+    cases = xml_data.getElementsByTagName('case')
+
+    context = {
+        "[case]": '',
+        "[PARTIES]": '',
+        "[CLIENT_REF_NUM]": client_ref_num,
+        "[BANKRUPTCY_NUMBER]":[],
+        "[FILED]":[],
+        "[VOL]": [],
+        "[CHAP]": [],
+        "[DEBTOR]": [],
+        "[SSN]": [],
+        "[ADDRESS]": [],
+        "[CITYSTATEZIP]": [],
+        "[ATTORNEY]": [],
+        "[TRUSTEE]": [],
+        "[DISCH]": [],
+        "[TERM]": [],
+        "[:forEach]":''
+    }
+
+    for case_element in cases:
+        context["[DEBTOR]"].append(get_element_value_from_parties(case_element, 'DEBTOR'))
+        context["[SSN]"].append(get_element_value_from_parties(case_element, 'SSN'))
+        context["[ADDRESS]"].append(get_element_value_from_parties(case_element, 'ADDRESS'))
+        context["[CITYSTATEZIP]"].append(get_element_value_from_parties(case_element, 'CITYSTATEZIP'))
+        context["[ATTORNEY]"].append(get_element_value_from_parties(case_element, 'ATTORNEY'))
+        context["[TRUSTEE]"].append(get_element_value_from_parties(case_element, 'TRUSTEE'))
+        context["[BANKRUPTCY_NUMBER]"].append(get_element_value(case_element, 'BANKRUPTCY_NUMBER'))
+        context["[VOL]"].append(get_element_value(case_element, 'VOLUNTARY'))
+        context["[CHAP]"].append(get_element_value(case_element, 'CHAPTER'))
+        context["[DISCH]"].append(get_element_value(case_element, 'DATE_DISCHARGED'))
+        context["[TERM]"].append(get_element_value(case_element, 'DATE_TERMINATED'))
+        context["[FILED]"].append(get_element_value(case_element, 'DATE_FILED'))
+
+    context['N_CASES'] = len(context.get('[BANKRUPTCY_NUMBER]'))
+    document = Document('.\\jsnetwork_project\\media\\Bankruptcy Template.docx')
+    for _ in range(context['N_CASES']-1):
+        for element in Document('.\\jsnetwork_project\\media\\Bankruptcy Template.docx').element.body:
+            document.element.body.append(element)
+
+
+    for section in document.sections:
+        header = section.header
+        for table in header.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        if '[CLIENT_REF_NUM]' in paragraph.text:
+                            font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                            paragraph.text = paragraph.text.replace('[CLIENT_REF_NUM]', client_ref_num)
+                            for run in paragraph.runs:
+                                run.font.name = font_name
+
+    for paragraph in document.paragraphs:
+        for key, values in context.items():
+            formatted_key = key.replace('[', '').replace(']', '')
+            inline = paragraph.runs
+            for i in range(len(inline)):
+                if formatted_key in inline[i].text:
+                    if isinstance(values, list):
+                        inline[i].text = inline[i].text.replace(formatted_key, values.pop(0))
+                        inline[i-1].text = inline[i-1].text.replace('[', '')
+                        inline[i+1].text = inline[i+1].text.replace(']', '')
+                    else:
+                        inline[i].text = inline[i].text.replace(formatted_key, values)
+                        inline[i - 1].text = inline[i - 1].text.replace('[', '')
+                        inline[i + 1].text = inline[i + 1].text.replace(']', '')
+                    inline[i].font.color.rgb = RGBColor(0, 0, 0)
+                if inline[i].text == '[' and inline[i+1].text == ':':
+                    for _ in range(4):
+                        inline[i].text = ''
+                        i+=1
+
+    for table in document.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    if "[ATTORNEY]" in paragraph.text:
+                        font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                        paragraph.text = paragraph.text.replace("[ATTORNEY]", context.get("[ATTORNEY]").pop(0))
+                        for run in paragraph.runs:
+                            run.font.name = font_name
+
+    for paragraph in document.paragraphs:
+        if paragraph.text == '\t, ':
+            p = paragraph._element
+            p.getparent().remove(p)
+            p._p = p._element = None
+        if paragraph.text == '':
+            inline = paragraph.runs
+            if len(inline)>0:
+                p = paragraph._element
+                p.getparent().remove(p)
+                p._p = p._element = None
     
     
+    temp_word_path  = os.path.join(settings.MEDIA_ROOT, f'generated_BankruptcyReport.docx')
+    document.save(temp_word_path)
+    
+    libreoffice_executable = "C:\\Program Files\\LibreOffice\\program\\soffice.exe"
+
+    # Comando para convertir el archivo a PDF
+    cmd = [libreoffice_executable, '--headless', '--convert-to', 'pdf', '--outdir', os.path.join('.', 'jsnetwork_project', 'media'), temp_word_path]
+
+    # Ejecutar el comando
+    subprocess.run(cmd)
+    # Eliminar los archivos temporales
+    os.remove(temp_word_path)
+    with open(os.path.join('.', 'jsnetwork_project', 'media', f'generated_BankruptcyReport.pdf'), 'rb') as pdf_file:
+        response = HttpResponse(pdf_file.read(), content_type='application/pdf')
+        response['Content-Disposition'] = 'attachment; filename="documento.pdf"'
+    os.remove(os.path.join('.', 'jsnetwork_project', 'media', f'generated_BankruptcyReport.pdf'))
+    return response
+
+def get_element_value(element, tag_name):
+    tag_elements = element.getElementsByTagName(tag_name)
+    if tag_elements and tag_elements[0].firstChild:
+        return tag_elements[0].firstChild.nodeValue
+    return ''
+
+def get_element_value_from_parties(element, tag_name):
+    parties_elements = element.getElementsByTagName('PARTIES')
+    if parties_elements and parties_elements[0].getElementsByTagName(tag_name):
+        tag_elements = parties_elements[0].getElementsByTagName(tag_name)
+        if tag_elements and tag_elements[0].firstChild.nodeValue:
+            return tag_elements[0].firstChild.nodeValue
+    return '#N/A' if tag_name in ['ATTORNEY','TRUSTEE'] else ''
+
+
 # doc_uri = os.path.join(".", "jsnetwork_project", 'media', 'USDC Template.docx')
 # xml = open(os.path.join(".", "jsnetwork_project", "media", "alejandro usdc.xml"), 'rb')
 # xml_data_str = xml.read().decode("utf-8")
