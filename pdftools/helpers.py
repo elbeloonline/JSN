@@ -352,7 +352,11 @@ def replace_patriot(uri, xml_data: minidom.Document):
 def replace_coverpage(uri, xml_data: minidom.Document):
     client_file_num = xml_data.getElementsByTagName('CLIENT_FILE_NUM')[0].firstChild.nodeValue
     name = xml_data.getElementsByTagName('NAME')[0].firstChild.nodeValue
-    address = xml_data.getElementsByTagName('ADDRESS')[0].firstChild.nodeValue
+    print(xml_data.getElementsByTagName('ADDRESS')[0].firstChild)
+    if xml_data.getElementsByTagName('ADDRESS')[0].firstChild is not None:
+        address = xml_data.getElementsByTagName('ADDRESS')[0].firstChild.nodeValue
+    else:
+        address = "Address not found" 
     city_state_zip = xml_data.getElementsByTagName('CITY_STATE_ZIP')[0].firstChild.nodeValue
     search_name_element = xml_data.getElementsByTagName('SEARCH_NAME_ELEMENT')
     court_matches = []

@@ -107,7 +107,7 @@ class WindwardReportEngine2:
         :return:
         """
         # @TODO: move this into the settings config file
-        base_uri = 'http://localhost:8080/pdftools/make_pdf'
+        base_uri = 'https://jsntest.com/pdftools/make_pdf/'
         template = os.path.join('.', 'jsnetwork_project', 'media', 'Case Report Template.docx')
         xml_filename = os.path.join('.', 'jsnetwork_project', 'media', 'case_report_template.xml')
         pdf_filename = os.path.join('.', 'jsnetwork_project', 'media', 'casereport')
