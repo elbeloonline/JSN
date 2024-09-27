@@ -488,7 +488,7 @@ def replace_usdc(uri, xml_data: minidom.Document):
     replace_context(document, 'UsdcReport', context)
     document.save(os.path.join(".",'jsnetwork_project','media',f'generated_UsdcReport.docx'))
 
-def replace_bankruptcy(xml_data: minidom.Document):
+def replace_bankruptcy(uri, xml_data: minidom.Document):
     client_ref_num = xml_data.getElementsByTagName('CLIENT_REF_NUM')[0].firstChild.nodeValue
     cases = xml_data.getElementsByTagName('case')
 
@@ -526,7 +526,7 @@ def replace_bankruptcy(xml_data: minidom.Document):
         context["[FILED]"].append(get_element_value(case_element, 'DATE_FILED'))
 
     context['N_CASES'] = len(context.get('[BANKRUPTCY_NUMBER]'))
-    document = Document(os.path.join(".",'jsnetwork_project','media','Bankruptcy Template.docx'))
+    document = Document(uri)
     for _ in range(context['N_CASES']-1):
         for element in document.element.body:
             document.element.body.append(element)
