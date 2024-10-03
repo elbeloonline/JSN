@@ -24,10 +24,18 @@ class PacerScraperBase:
         import time
         from selenium import webdriver
         options = webdriver.ChromeOptions()
-        options.add_argument('headless')
+        options.add_argument('--no-sandbox')
+        options.add_argument('--headless')
+        options.add_argument('--disable-gpu')
+        options.add_argument('--disable-dev-shm-usage')
+        options.add_argument('--disable-extensions')
+        options.add_argument('--crash-dumps-dir=/tmp/chromedriver')
+        options.add_argument('--remote-debugging-port=9222')
+
         # attempt to fix problem where selenium can't connect to localhost on EC2
         driver = None
-        while driver is None:
+        retries = 0
+        while driver is None and retries < 10:
             try:
                 driver = webdriver.Chrome(chrome_options=options)
             except Exception as e:
@@ -35,9 +43,11 @@ class PacerScraperBase:
                 print("Unexpected error while getting webdriver:", sys.exc_info()[0])
                 # print("Problem encountered while fetching webdriver: ".format(str(e)))
                 time.sleep(10)
+                retries += 1
                 # logging.error(traceback.format_exc())
 
         return driver
+
 
     @staticmethod
     def check_page_has_text(browser, search_text, print_src=False):
@@ -167,8 +177,8 @@ class PacerScraperBankruptcyUtils(PacerScraperBase):
     pacer_court_url_base = "https://ecf.njb.uscourts.gov/cgi-bin/"
     # pacer_court_url = "https://ecf.njb.uscourts.gov/cgi-bin/login.pl"
     pacer_bankruptcy_search_form_url = "https://ecf.njb.uscourts.gov/cgi-bin/iquery.pl"
-    # bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'pacer_bankruptcy_idx')
-    bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'bkcy_data', 'data_5')
+    bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'pacer_bankruptcy_idx')
+    # bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'bkcy_data', 'data_5')
     case_token = 'Case No.'
 
     def __init__(self):

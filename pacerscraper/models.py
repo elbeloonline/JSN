@@ -496,6 +496,8 @@ class BankruptcyReportQueryManager:
             case_match = PacerBankruptcyIndexCase_4.objects.using(settings.BKSEARCH_DB_COMB).filter(id__in=case_id_list)
         if es_idx == 'bkcy5':
             case_match = PacerBankruptcyIndexCase_5.objects.using(settings.BKSEARCH_DB_COMB).filter(id__in=case_id_list)
+        else:
+            case_match = PacerBankruptcyIndexCase.objects.using(settings.BKSEARCH_DB_COMB).filter(id__in=case_id_list)
         return case_match
 
 
@@ -588,7 +590,7 @@ class BankruptcyReportQueryManager:
 
         esu = ElasticSearchUtils()
         party_match = PacerBankruptcyParty.objects
-        es_bkcy_index_list = ['bkcy', 'bkcy2', 'bkcy3', 'bkcy4']
+        es_bkcy_index_list = ['all', 'bkcy', 'bkcy2', 'bkcy3', 'bkcy4']
         all_search_names = fn_list + ln_list
         case_match_list = []
 
