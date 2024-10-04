@@ -12,7 +12,7 @@ class PatriotPrimName(models.Model):
     prim_name = models.CharField(max_length=255)
     prim_type = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.prim_name
 
 
@@ -23,7 +23,7 @@ class PatriotAltName(models.Model):
     alt_name = models.CharField(max_length=255)
     alt_type = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.alt_name
 
 

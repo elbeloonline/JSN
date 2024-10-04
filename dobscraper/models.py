@@ -8,5 +8,5 @@ class ScnjDebtorDob(models.Model):
     dob = models.CharField(max_length=20, db_index=False, default=None, null=True)
     name = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Debtor name: {}, DoB: {}".format(self.name, self.dob)

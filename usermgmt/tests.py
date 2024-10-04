@@ -20,7 +20,7 @@ class QBClientTestCase(unittest.TestCase):
         client_mock.client_name = 'Main Street Title'
         # client_mock.client_id = self.quickbooks_csv[0][0]
         # client_mock.client_name = self.quickbooks_csv[0][1]
-        self.assertEqual(Client.__unicode__(client_mock), 'Main Street Title')
+        self.assertEqual(Client.__str__(client_mock), 'Main Street Title')
 
     def test_qb_sync_file_format(self):
         import csv

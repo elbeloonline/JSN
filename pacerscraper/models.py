@@ -28,7 +28,7 @@ class PacerJudgmentIndexCase(models.Model):
     alias_file_processed = models.CharField(max_length=1, db_index=True, default='N')
     party_file_processed = models.CharField(max_length=1, db_index=True, default='N')
 
-    def __unicode__(self):
+    def __str__(self):
         return "Case number: {}; Case status: {}; Amount: {}".format(self.case_number, self.case_status, self.amount)
 
 
@@ -51,7 +51,7 @@ class PacerBankruptcyIndexCase(models.Model):
     alias_file_processed = models.CharField(max_length=1, db_index=True, default='N')
     party_file_processed = models.CharField(max_length=1, db_index=True, default='N')
 
-    def __unicode__(self):
+    def __str__(self):
         return "Case number: {}; Date filed: {}; Date closed: {}".format(self.case_number, self.date_filed, self.date_closed)
 
 
@@ -60,7 +60,7 @@ class PacerBankruptcyParty(models.Model):
     party_name = models.CharField(max_length=255, db_index=True)
     party_type = models.CharField(max_length=255, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Party name: {}".format(self.party_name)
 
     # class Meta:
@@ -110,7 +110,7 @@ class PacerBankruptcyIndexCaseBase(models.Model):
     alias_file_processed = models.CharField(max_length=1, db_index=True, default='N')
     party_file_processed = models.CharField(max_length=1, db_index=True, default='N')
 
-    def __unicode__(self):
+    def __str__(self):
         return "Case number: {}; Date filed: {}; Date closed: {}".format(self.case_number, self.date_filed, self.date_closed)
 
     class Meta:
@@ -148,7 +148,7 @@ class PacerBankruptcyPartyBase(models.Model):
     party_name = models.CharField(max_length=255, db_index=True)
     party_type = models.CharField(max_length=255, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Party name: {}".format(self.party_name)
 
     class Meta:
@@ -185,7 +185,7 @@ class PacerJudgmentParty(models.Model):
     party_name = models.CharField(max_length=255, db_index=True)
     party_type = models.CharField(max_length=255)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Party name: {}".format(self.party_name)
 
 import threading
@@ -216,7 +216,7 @@ class PacerBankruptcyAlias(models.Model):
     bankruptcy_index_case = models.ForeignKey(PacerBankruptcyIndexCase, on_delete=models.CASCADE)
     alias_name = models.CharField(max_length=255, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Alias name: {}".format(self.alias_name)
 
 
@@ -224,7 +224,7 @@ class PacerJudgmentAlias(models.Model):
     judgment_index_case = models.ForeignKey(PacerJudgmentIndexCase, on_delete=models.CASCADE)
     alias_name = models.CharField(max_length=255, db_index=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Alias name: {}".format(self.alias_name)
 
 

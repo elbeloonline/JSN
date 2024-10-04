@@ -177,8 +177,8 @@ class PacerScraperBankruptcyUtils(PacerScraperBase):
     pacer_court_url_base = "https://ecf.njb.uscourts.gov/cgi-bin/"
     # pacer_court_url = "https://ecf.njb.uscourts.gov/cgi-bin/login.pl"
     pacer_bankruptcy_search_form_url = "https://ecf.njb.uscourts.gov/cgi-bin/iquery.pl"
-    bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'pacer_bankruptcy_idx')
-    # bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'bkcy_data', 'data_5')
+    # bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'pacer_bankruptcy_idx')
+    bankruptcy_files_dir = os.path.join(settings.MEDIA_ROOT, 'bkcy_data', 'data_5')
     case_token = 'Case No.'
 
     def __init__(self):

@@ -502,7 +502,7 @@ class ReportFactory:
         # make sure all names show, even if no results were found. return the all clear signal in this caes
         searchnames = SearchName.objects.filter(order_id=order.id)
         for searchname in searchnames:
-            name = searchname.__unicode__()
+            name = searchname.__str__()
             if not namesearch_dict.get(name, None):
                 namesearch_dict[name] = None
         print(('----------> This is the namesearch dict built: {}'.format(namesearch_dict)))

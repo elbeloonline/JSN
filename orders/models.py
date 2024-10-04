@@ -21,7 +21,7 @@ class Client(models.Model):
     state = models.CharField(max_length=2, blank=True, default=None, null=True)
     zip = models.CharField(max_length=10, blank=True, default=None, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.client_name
 
 
@@ -49,7 +49,7 @@ class Order(TimeStampedModel):
         return self.created
     date_ordered.short_description = "Date ordered"
 
-    def __unicode__(self):
+    def __str__(self):
         return self.title_number
 
 
@@ -73,7 +73,7 @@ class GeneratedReport(models.Model):
     num_patriot_matches = models.IntegerField(blank=True, default=None, null=True)
     name_select_ready = models.CharField(max_length=1, blank=True, default=None, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return "Reports generated (b,u,s,p): {} - {} - {}".format(self.bankruptcy_filename, self.usdc_filename,
                                                                   self.state_filename, self.patriot_filename)
 
@@ -101,8 +101,16 @@ class SearchName(models.Model):
     additional_notes = models.TextField(blank=True)
     report_name = models.CharField(max_length=100, blank=True)
     high_value_search = models.BooleanField(default=False)
-
+    
     def __unicode__(self):
+        from collections import defaultdict
+        if self.first_name != "":
+            name = "{} {} {}".format(self.first_name, self.middle_name, self.last_name)
+        elif self.company_name != "":
+            name = self.company_name
+        return name
+    
+    def __str__(self):
         from collections import defaultdict
         if self.first_name != "":
             name = "{} {} {}".format(self.first_name, self.middle_name, self.last_name)
@@ -162,7 +170,7 @@ class UserClient(models.Model):
     client = models.ForeignKey(Client, on_delete=models.CASCADE, null=True)
     user = models.ForeignKey(user_model, on_delete=models.CASCADE, null=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.user.username + " - " + self.client.client_name
 
 
