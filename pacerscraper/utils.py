@@ -23,31 +23,31 @@ class PacerScraperBase:
         """
         import time
         from selenium import webdriver
-        options = webdriver.ChromeOptions()
-        options.add_argument('--no-sandbox')
+        from selenium.webdriver.firefox.webdriver import Options
+        options = Options()
+        # options.add_argument('--no-sandbox')
         options.add_argument('--headless')
-        options.add_argument('--disable-gpu')
-        options.add_argument('--disable-dev-shm-usage')
-        options.add_argument('--disable-extensions')
-        options.add_argument('--crash-dumps-dir=/tmp/chromedriver')
-        options.add_argument('--remote-debugging-port=9222')
+        # options.add_argument('--disable-gpu')
+        # options.add_argument('--disable-dev-shm-usage')
+        # options.add_argument('--disable-extensions')
+        # options.add_argument('--crash-dumps-dir=/tmp/chromedriver')
+        # options.add_argument('--remote-debugging-port=9222')
 
         # attempt to fix problem where selenium can't connect to localhost on EC2
         driver = None
         retries = 0
         while driver is None and retries < 10:
             try:
-                driver = webdriver.Chrome(chrome_options=options)
+                driver = webdriver.Firefox(executable_path='/usr/local/bin/geckodriver', firefox_options=options)
             except Exception as e:
                 driver = None
-                print("Unexpected error while getting webdriver:", sys.exc_info()[0])
+                print("Unexpected error while getting webdriver:", e)
                 # print("Problem encountered while fetching webdriver: ".format(str(e)))
                 time.sleep(10)
                 retries += 1
                 # logging.error(traceback.format_exc())
 
         return driver
-
 
     @staticmethod
     def check_page_has_text(browser, search_text, print_src=False):
