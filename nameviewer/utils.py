@@ -596,7 +596,7 @@ class NameAliasUtils:
         # f = open(os.path.join(settings.MEDIA_ROOT,names_file))
         # names_list = f.read().decode("utf-8-sig").encode("utf-8")
         names_list = [x.strip() for x in names_list]
-        names_list[0] = names_list[0].decode("utf-8-sig").encode("utf-8")  # get rid of UTF-8 BOM
+        # names_list[0] = names_list[0].decode("utf-8-sig").encode("utf-8")  # get rid of UTF-8 BOM
 
         # retrieve scored names
         if name_select:

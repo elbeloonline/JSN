@@ -54,7 +54,7 @@ docxtpl==0.16.7
 mock==2.0.0
 twocaptchaapi==0.3
 XlsxWriter==1.2.7
-reportlab==4.0.0
+reportlab==3.6.13
 openpyxl==2.6.4
 
 # missed

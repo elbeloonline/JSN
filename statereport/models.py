@@ -232,7 +232,7 @@ class Case(DatabaseExtractBase):
             cls.data_layout_dict = d
         return cls.data_layout_dict
 
-    def __unicode__(self):
+    def __str__(self):
         """
         Use case title field for tostring function
         :return:

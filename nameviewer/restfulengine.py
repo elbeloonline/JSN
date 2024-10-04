@@ -111,7 +111,7 @@ _VERSION_PATH = "v1/version"
 _REPORTS_PATH = "v1/reports"
 _REPORT_GUID_PATH = _REPORTS_PATH + "/{}"  # parameter is guid
 _STATUS_PATH = _REPORT_GUID_PATH + "/status"  # parameter is guid
-_HEADERS = {'Content-Type': 'application/json;charset=UTR-8',
+_HEADERS = {'Content-Type': 'application/json;charset=UTF-8',
             'Accept': 'application/json'}
 
 
@@ -304,6 +304,7 @@ class Report:
 
         # make the request
         uri = self._base_uri + _REPORTS_PATH
+        print(uri)
         r = requests.post(uri, headers=_HEADERS, json=req_json)
 
         if _async:
@@ -364,6 +365,7 @@ class Report:
     def _handle_response(self, r):
         # this is for handling non-async response. We need to write it
         # out to self._report
+        print(r.status_code)
         if r.status_code == requests.codes.ok:
             data = base64.b64decode(r.json()["Data"])
             try:
@@ -373,6 +375,7 @@ class Report:
                 with open(self._report, 'wb') as file:
                     file.write(data)
         else:
+            print(r)
             raise ReportException(r.json())
 
     def _handle_async_response(self, r):

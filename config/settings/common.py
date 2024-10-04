@@ -108,7 +108,7 @@ ADMINS = (
     ("""Kwan Skinner""", 'kskinner@gmail.com'),
 )
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['jsntest.com', '*']
 
 # See: https://docs.djangoproject.com/en/dev/ref/settings/#managers
 MANAGERS = ADMINS
@@ -133,9 +133,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'jsnetwork',
-        'USER': 'root',
-        'PASSWORD': '',
-        'HOST': 'localhost',   # Or an IP Address that your DB is hosted on
+        'USER': 'myuser',
+        'PASSWORD': 'centralpagegarden',
+        'HOST': 'ec2-54-152-132-8.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -147,7 +147,7 @@ DATABASES = {
         'USER': 'myuser',
         'PASSWORD': 'centralpagegarden',
         # 'HOST': 'ec2-34-226-215-155.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
-        'HOST': 'ec2-107-20-71-205.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+        'HOST': 'ec2-18-212-52-59.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -158,7 +158,7 @@ DATABASES = {
         'NAME': 'jsnetwork',
         'USER': 'myuser',
         'PASSWORD': 'centralpagegarden',
-        'HOST': 'ec2-34-207-89-110.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+        'HOST': 'ec2-18-212-52-59.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -191,7 +191,7 @@ DATABASES = {
         'NAME': 'jsnetwork',
         'USER': 'myuser',
         'PASSWORD': 'centralpagegarden',
-        'HOST': 'ec2-34-207-89-110.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+        'HOST': 'ec2-18-212-52-59.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -202,7 +202,7 @@ DATABASES = {
         'NAME': 'jsnetwork',
         'USER': 'myuser',
         'PASSWORD': 'centralpagegarden',
-        'HOST': 'ec2-54-90-4-55.compute-1.amazonaws.com',  # Or an IP Address that your DB is hosted on
+        'HOST': 'ec2-18-212-52-59.compute-1.amazonaws.com',  # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {
             'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
@@ -361,7 +361,7 @@ ADMIN_URL = r'^admin/'
 # ------------------------------------------------------------------------------
 
 # WINWARD REPORTING ENGINE SETTINGS
-WINDWARD_ENGINE_URL = 'http://ec2-34-224-57-184.compute-1.amazonaws.com:8080'
+WINDWARD_ENGINE_URL = 'https://jsntest.com/pdftools/make_pdf/'
 
 # NAME MATCH DATABASE SETTINGS
 NAME_MATCH_SCORE_DEFAULT = 87
