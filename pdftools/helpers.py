@@ -324,7 +324,89 @@ def replace_context(document: Document, template_name, context):
                             text = runs[index].text.replace(runs[index].text[start : start + length], '', 1)
                             runs[index].text = text
                     j += 1
-                        
+
+def replace_docket_common(document: Document, uri, template_name, context):
+    newdoc = Document(uri)
+    for _ in range(context['N_CASES']-1):
+        for element in Document(uri).element.body:
+            newdoc.element.body.append(element)
+
+
+    for section in newdoc.sections:
+        header = section.header
+        for table in header.tables:
+            for row in table.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        if '[CLIENT_REF_NUM]' in paragraph.text:
+                            font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                            paragraph.text = paragraph.text.replace('[CLIENT_REF_NUM]', context['[CLIENT_REF_NUM]'])
+                            for run in paragraph.runs:
+                                run.font.name = font_name
+
+    for paragraph in newdoc.paragraphs:
+        for key, values in context.items():
+            formatted_key = key.replace('[', '').replace(']', '')
+            inline = paragraph.runs
+            for i in range(len(inline)):
+                if formatted_key in inline[i].text:
+                    if isinstance(values, list):
+                        inline[i].text = inline[i].text.replace(formatted_key, values.pop(0))
+                        inline[i-1].text = inline[i-1].text.replace('[', '')
+                        inline[i+1].text = inline[i+1].text.replace(']', '')
+                    else:
+                        inline[i].text = inline[i].text.replace(formatted_key, values)
+                        inline[i - 1].text = inline[i - 1].text.replace('[', '')
+                        inline[i + 1].text = inline[i + 1].text.replace(']', '')
+                    inline[i].font.color.rgb = RGBColor(0, 0, 0)
+                if inline[i].text == '[' and inline[i+1].text == ':':
+                    for _ in range(4):
+                        inline[i].text = ''
+                        i+=1
+
+    for table in newdoc.tables:
+        for row in table.rows:
+            for cell in row.cells:
+                for paragraph in cell.paragraphs:
+                    if "[:forEach]" in paragraph.text:
+                        font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                        paragraph.text = paragraph.text.replace("[:forEach]", '')
+                        for run in paragraph.runs:
+                            run.font.name = font_name
+                    if "[USDC_CASE_NUMBER]" in paragraph.text:
+                        font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                        paragraph.text = paragraph.text.replace("[USDC_CASE_NUMBER]", context.get("[USDC_CASE_NUMBER]").pop(0))
+                        for run in paragraph.runs:
+                            run.font.name = font_name
+                    if "[ATTORNEY]" in paragraph.text:
+                        font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                        paragraph.text = paragraph.text.replace("[ATTORNEY]", context.get("[ATTORNEY]").pop(0))
+                        for run in paragraph.runs:
+                            run.font.name = font_name
+                    if "[CREDITOR_ATTORNEY]" in paragraph.text:
+                        font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                        paragraph.text = paragraph.text.replace("[CREDITOR_ATTORNEY]", context.get("[CREDITOR_ATTORNEY]").pop(0))
+                        for run in paragraph.runs:
+                            run.font.name = font_name
+                            
+    for paragraph in newdoc.paragraphs:
+        if paragraph.text == '\t, ':
+            p = paragraph._element
+            p.getparent().remove(p)
+            p._p = p._element = None
+        if paragraph.text == '':
+            inline = paragraph.runs
+            if len(inline)>0:
+                p = paragraph._element
+                p.getparent().remove(p)
+                p._p = p._element = None
+        for run in paragraph.runs:
+            if 'w:br' in run._element.xml and 'type="page"' in run._element.xml:
+                p = paragraph._element
+                p.getparent().remove(p)
+                p._p = p._element = None
+    
+    return newdoc            
             
 def replace_patriot(uri, xml_data: minidom.Document):
     client_ref_num = xml_data.getElementsByTagName('CLIENT_REF_NUM')[0].firstChild.nodeValue
@@ -443,6 +525,7 @@ def replace_usdc(uri, xml_data: minidom.Document):
     usdc_case_numbers = []
     dates_filed = []
     creditors = []
+    creditor_attorneys = []
     debtors = []
     attorneys = []
     trustees = []
@@ -456,13 +539,15 @@ def replace_usdc(uri, xml_data: minidom.Document):
         date_filed = cases[i].getElementsByTagName('DATE_FILED')[0].firstChild.nodeValue
         dates_filed.append(date_filed)
         parties = cases[i].getElementsByTagName('PARTIES')
-        creditor = cases[i].getElementsByTagName('CREDITOR')[0].firstChild.nodeValue
+        creditor = get_element_value_from_parties(cases[i], 'CREDITOR')
         creditors.append(creditor)
-        debtor = cases[i].getElementsByTagName('DEBTOR')[0].firstChild.nodeValue
+        creditor_attorney = get_element_value_from_parties(cases[i], 'CREDITOR_ATTORNEY')
+        creditor_attorneys.append(creditor_attorney)
+        debtor = get_element_value_from_parties(cases[i], 'DEBTOR')
         debtors.append(debtor)
-        attorney = cases[i].getElementsByTagName('ATTORNEY')[0].firstChild.nodeValue
+        attorney = get_element_value_from_parties(cases[i], 'ATTORNEY')
         attorneys.append(attorney)
-        trustee = cases[i].getElementsByTagName('TRUSTEE')[0].firstChild.nodeValue
+        trustee = get_element_value_from_parties(cases[i], 'TRUSTEE')
         trustees.append(trustee)
         date_discharged = cases[i].getElementsByTagName('DATE_DISCHARGED')[0].firstChild.nodeValue
         dates_discharged.append(date_discharged)
@@ -477,6 +562,7 @@ def replace_usdc(uri, xml_data: minidom.Document):
         "[USDC_CASE_NUMBER]": usdc_case_numbers,
         "[DATE_FILED]": dates_filed,
         "[CREDITOR]": creditors,
+        "[CREDITOR_ATTORNEY]": creditor_attorneys,
         "[DEBTOR]": debtors,
         "[ATTORNEY]": attorneys,
         "[TRUSTEE]": trustees,
@@ -484,9 +570,9 @@ def replace_usdc(uri, xml_data: minidom.Document):
         "[DATE_TERMINATED]": dates_terminated,
         "[:forEach]": ''
     }
-    document = Document(uri)
-    replace_context(document, 'UsdcReport', context)
-    document.save(os.path.join(".",'jsnetwork_project','media',f'generated_UsdcReport.docx'))
+    document = Document(uri)    
+    newdoc = replace_docket_common(document, uri, 'UsdcReport', context)
+    newdoc.save(os.path.join(".",'jsnetwork_project','media',f'generated_UsdcReport.docx'))
 
 def replace_bankruptcy(uri, xml_data: minidom.Document):
     client_ref_num = xml_data.getElementsByTagName('CLIENT_REF_NUM')[0].firstChild.nodeValue
@@ -527,68 +613,11 @@ def replace_bankruptcy(uri, xml_data: minidom.Document):
 
     context['N_CASES'] = len(context.get('[BANKRUPTCY_NUMBER]'))
     document = Document(uri)
-    for _ in range(context['N_CASES']-1):
-        for element in document.element.body:
-            document.element.body.append(element)
-
-
-    for section in document.sections:
-        header = section.header
-        for table in header.tables:
-            for row in table.rows:
-                for cell in row.cells:
-                    for paragraph in cell.paragraphs:
-                        if '[CLIENT_REF_NUM]' in paragraph.text:
-                            font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                            paragraph.text = paragraph.text.replace('[CLIENT_REF_NUM]', client_ref_num)
-                            for run in paragraph.runs:
-                                run.font.name = font_name
-
-    for paragraph in document.paragraphs:
-        for key, values in context.items():
-            formatted_key = key.replace('[', '').replace(']', '')
-            inline = paragraph.runs
-            for i in range(len(inline)):
-                if formatted_key in inline[i].text:
-                    if isinstance(values, list):
-                        inline[i].text = inline[i].text.replace(formatted_key, values.pop(0))
-                        inline[i-1].text = inline[i-1].text.replace('[', '')
-                        inline[i+1].text = inline[i+1].text.replace(']', '')
-                    else:
-                        inline[i].text = inline[i].text.replace(formatted_key, values)
-                        inline[i - 1].text = inline[i - 1].text.replace('[', '')
-                        inline[i + 1].text = inline[i + 1].text.replace(']', '')
-                    inline[i].font.color.rgb = RGBColor(0, 0, 0)
-                if inline[i].text == '[' and inline[i+1].text == ':':
-                    for _ in range(4):
-                        inline[i].text = ''
-                        i+=1
-
-    for table in document.tables:
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    if "[ATTORNEY]" in paragraph.text:
-                        font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                        paragraph.text = paragraph.text.replace("[ATTORNEY]", context.get("[ATTORNEY]").pop(0))
-                        for run in paragraph.runs:
-                            run.font.name = font_name
-
-    for paragraph in document.paragraphs:
-        if paragraph.text == '\t, ':
-            p = paragraph._element
-            p.getparent().remove(p)
-            p._p = p._element = None
-        if paragraph.text == '':
-            inline = paragraph.runs
-            if len(inline)>0:
-                p = paragraph._element
-                p.getparent().remove(p)
-                p._p = p._element = None
     
+    newdoc = replace_docket_common(document, uri, 'BankruptcyReport', context)
     
     temp_word_path  = os.path.join(".",'jsnetwork_project','media', f'generated_BankruptcyReport.docx')
-    document.save(temp_word_path)
+    newdoc.save(temp_word_path)
 
 def get_element_value(element, tag_name):
     tag_elements = element.getElementsByTagName(tag_name)

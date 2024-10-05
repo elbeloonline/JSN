@@ -344,6 +344,7 @@ class ReportFactory:
                             case_number = child_case.find('BANKRUPTCY_NUMBER').text
                         except:
                             case_number = "NOT PROVIDED"
+                        print("Case number: {}".format(case_number))
                         docket_list.append(case_number)
                     master_docket_dict = update_master_docket_dict(master_docket_dict, search_name, docket_list, DocketListTypes.BANKRUPTCY)
                     # print("After BK build, master docket dict now contains {}".format(master_docket_dict))
