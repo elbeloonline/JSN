@@ -1136,14 +1136,3 @@ def get_creditor_values_from_debt(element, index, tag_name):
         if tag_elements and tag_elements[0].firstChild:
             return tag_elements[0].firstChild.nodeValue
     return ''
-        
-
-doc_uri = os.path.join(".", "jsnetwork_project", 'media', 'Case Report Template.docx')
-xml = open(os.path.join(".", "jsnetwork_project", "media", "tom state.xml"), 'rb')
-xml_data_str = xml.read().decode("utf-8")
-xml_data = minidom.parseString(xml_data_str)
-replace_state(doc_uri, xml_data)
-# replace_usdc(doc_uri, xml_data)
-# replace_docketreport(doc_uri, xml_data)
-# replace_coverpage(doc_uri, xml_data)
-# replace_patriot(doc_uri, xml_data)
