@@ -128,6 +128,7 @@ BKSEARCH_DB3 = 'bksearch3'
 BKSEARCH_DB4 = 'bksearch4'
 USDCSEARCH_DB = 'usdcsearch'  # remote version of data stored entirely on instance 2
 BKSEARCH_DB_COMB = 'bksearch2_comb'
+CASESEARCH_DB = 'casesearch'
 
 DATABASES = {
     'default': {
@@ -135,6 +136,18 @@ DATABASES = {
         'NAME': 'jsnetwork',
         'USER': 'myuser',
         'PASSWORD': 'centralpagegarden',
+        'HOST': 'ec2-54-152-132-8.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': "SET sql_mode='STRICT_TRANS_TABLES'",
+        },
+    },
+    CASESEARCH_DB: {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'jsnetwork',
+        'USER': 'myuser',
+        'PASSWORD': 'centralpagegarden',
+        # 'HOST': 'ec2-34-226-215-155.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'HOST': 'ec2-54-152-132-8.compute-1.amazonaws.com',   # Or an IP Address that your DB is hosted on
         'PORT': '3306',
         'OPTIONS': {

@@ -10,7 +10,7 @@ class ElasticSearchUtils:
         es_host_str = settings.ELASTICSEARCH_DSL['default']['hosts']
         es_host, es_port = es_host_str.split(':')
         # es_host_nodes = [{"host": "18.205.38.138", "port": 9200}]
-        es_host_nodes = [{"host": es_host, "port": int(es_port)}]
+        es_host_nodes = [{"host": es_host, "port": int(es_port)}, scheme: "https"]
         self.host_nodes = es_host_nodes
 
     def _build_name_q(self, names_list):

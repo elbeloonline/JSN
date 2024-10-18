@@ -13,7 +13,7 @@ import re, os
 import sys
 import subprocess
 
-from pdftools.helpers import replace_coverpage, replace_docketreport, replace_patriot, replace_usdc, replace_bankruptcy
+from pdftools.helpers import replace_coverpage, replace_docketreport, replace_patriot, replace_usdc, replace_bankruptcy, replace_state
 
 # Create your views here.
 @login_required
@@ -49,6 +49,8 @@ def make_pdf(request):
             replace_usdc(uri, xml_data)
         elif template_name == 'BankruptcyReport':
             replace_bankruptcy(uri, xml_data)
+        elif template_name == 'CaseReport':
+            replace_state(uri, xml_data)
 
         
         # Convert word to pdf. Requires installing LibreOffice and adding the directory to PATH

@@ -190,6 +190,7 @@ class PacerScraperBankruptcyUtils(PacerScraperBase):
         """
         Login to the pacer system and navigate to the home page
         :param web_driver: selenium.webdriver
+        Status 10/17/2024: The account used for the scraper is not longer active.
         """
         from time import sleep
         web_driver.get(PacerScraperUtils.pacer_court_url)
