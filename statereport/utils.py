@@ -57,7 +57,7 @@ class StateReportNameSearchUtils:
 
         from django.db.models import Q
         closed_query = reduce(lambda x, y: x | y, [Q(dckt_jdg_seq_num=judg[2:8]) & Q(dckt_jdg_num_yr=judg[-2:]) for judg in matched_judgments])
-        closed_filtered = StateClosingsReport.objects.using(settings.NAMESEARCH_DB).filter(closed_query).values_list('dckt_jdg_seq_num','dckt_jdg_type_code','dckt_jdg_num_yr')
+        closed_filtered = StateClosingsReport.objects.using(settings.CASESEARCH_DB).filter(closed_query).values_list('dckt_jdg_seq_num','dckt_jdg_type_code','dckt_jdg_num_yr')
         closed_judgments_list = [x[1] + x[0] + x[2] for x in closed_filtered]
         party_match_closed_excluded = party_match.exclude(case__docketed_judgment_number__in=(closed_judgments_list))
         return party_match_closed_excluded
@@ -95,11 +95,12 @@ class StateReportNameSearchUtils:
                                                                                                       date_to)
             final_sql += date_filter_sql
 
-        party_match = Party.objects.using(settings.NAMESEARCH_DB).raw(final_sql)
+        print(final_sql)
+        party_match = Party.objects.using(settings.CASESEARCH_DB).raw(final_sql)
 
         # @TODO: company name needs alt party match objects too
         q_alt_objs = Q()
-        party_alt_match = PartyAlt.objects.using(settings.NAMESEARCH_DB)
+        party_alt_match = PartyAlt.objects.using(settings.CASESEARCH_DB)
         for n in co_name_elements:
             q_alt_objs &= Q(full_search_party_name__icontains=' ' + n + ' ')
         party_alt_match = party_alt_match.filter(q_alt_objs)
@@ -147,7 +148,7 @@ class StateReportNameSearchUtils:
 
         high_value_threshold = settings.HIGH_VALUE_DEFAULT_THRESHOLD
 
-        dals = DebtAmountLookup.objects.using(settings.NAMESEARCH_DB).filter(party_orig_amt__gte=high_value_threshold)\
+        dals = DebtAmountLookup.objects.using(settings.CASESEARCH_DB).filter(party_orig_amt__gte=high_value_threshold)\
             .filter(case__party__record_type_code_party='D')
 
         q_objs = Q()
@@ -162,10 +163,11 @@ class StateReportNameSearchUtils:
         dals = dals.values_list('case__party__id', flat=True)
         dals = list(dals)
         high_value_party_ids = set(dals)
-        party_match_high_value = Party.objects.using(settings.NAMESEARCH_DB).filter(id__in=high_value_party_ids)
+        party_match_high_value = Party.objects.using(settings.CASESEARCH_DB).filter(id__in=high_value_party_ids)
 
         # addition: doing filtering and sorting here
         party_match = StateReportNameSearchUtils.remove_party_duplicates(party_match_high_value)
+        print("statereport/utils.py")
         print(('Size of party match set: {}'.format(len(party_match))))
 
         from orders.utils import CaseMatchSortType
@@ -242,7 +244,7 @@ class StateReportNameSearchUtils:
 
         from django.db import connection, connections
         cursor_sql = continuation_sql.format(final_sql)
-        cursor = connections[settings.NAMESEARCH_DB].cursor()
+        cursor = connections[settings.CASESEARCH_DB].cursor()
         logger.info("Querying database for continuations...")
         cursor.execute(cursor_sql)
         continuations_party_ids = cursor.fetchall()
@@ -251,7 +253,7 @@ class StateReportNameSearchUtils:
         if continuations_party_ids:
             continuation_party_id_list = continuations_party_ids[0]
             party_ids_list = [x for x in continuation_party_id_list]
-            party_match_continuations = Party.objects.using(settings.NAMESEARCH_DB).filter(
+            party_match_continuations = Party.objects.using(settings.CASESEARCH_DB).filter(
                 id__in=party_ids_list).filter(case__party__party_role_type_code='D')
         # END - build party match continuations
         return party_match_continuations
@@ -319,12 +321,12 @@ class StateReportNameSearchUtils:
         if seq_num:
             logger.debug("Using supplied sequence number: {}".format(seq_num))
             # making this work only on docket numbers minus other info
-            party_match = Party.objects.using(settings.NAMESEARCH_DB).filter(
+            party_match = Party.objects.using(settings.CASESEARCH_DB).filter(
                 docketed_judgment_number__exact=seq_num)
 
         if 1 == 2:  # OLD_QUERY_FOR_CONTINUATIONS:
-            party_match = party_match.using(settings.NAMESEARCH_DB).filter(party_role_type_code__exact=debtor_code_type)
-            party_alt_match = party_alt_match.using(settings.NAMESEARCH_DB)
+            party_match = party_match.using(settings.CASESEARCH_DB).filter(party_role_type_code__exact=debtor_code_type)
+            party_alt_match = party_alt_match.using(settings.CASESEARCH_DB)
 
             party_match_continuations = StateReportNameSearchUtils.build_party_match_continuations(
                 searchname.first_name,
@@ -438,7 +440,7 @@ class StateReportNameSearchUtils:
         from django.conf import settings
         from pdftools.models import SCDobDocument
 
-        return SCDobDocument.objects.using(settings.NAMESEARCH_DB).filter(judgment_num=docket_num_ccyy).first()
+        return SCDobDocument.objects.using(settings.CASESEARCH_DB).filter(judgment_num=docket_num_ccyy).first()
 
     @staticmethod
     def match_scraped_data_to_party(party_instance, scraped_judg):

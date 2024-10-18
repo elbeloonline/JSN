@@ -5,6 +5,8 @@ import collections
 from django.db import models
 from enum import Enum
 
+from statereport.utils import StateReportNameSearchUtils
+
 
 class ReportBatch(models.Model):
     """
@@ -1241,13 +1243,22 @@ class StateReportQueryManager():
         from nameviewer.helpers import make_latin_last_name_variations
         import logging
         from django.conf import settings
+        from django.db.models import Q
 
         logger = logging.getLogger(__name__)
         # first names
         party_first_name_list = StateReportQueryManager._build_first_name_list(searchname_first_name, extra_name)
         party_first_name_list = StateReportQueryManager._filter_close_matches(searchname_first_name, party_first_name_list, is_first_name=True)
-        party_match = Party.objects.using(settings.NAMESEARCH_DB)
-        party_alt_match = PartyAlt.objects.using(settings.NAMESEARCH_DB)
+
+        party_match = Party.objects.using(settings.CASESEARCH_DB).filter(party_first_name__icontains=searchname_first_name, party_last_name__icontains=searchname_last_name, party_role_type_code='D')
+        #.raw(sql, [searchname_first_name, searchname_last_name])
+        
+        alt_query = Q()
+        alt_query &= Q(party_last_name__icontains=searchname_first_name)
+        alt_query &= Q(party_last_name__icontains=searchname_last_name)
+        
+        
+        party_alt_match = PartyAlt.objects.using(settings.CASESEARCH_DB).filter(alt_query)
         q_obj_middle_name = ""
         if middle_name.strip():
             q_obj_middle_name = middle_name
@@ -1263,11 +1274,13 @@ class StateReportQueryManager():
         from statereport.elasticsearch_utils import ElasticSearchUtils
         esu = ElasticSearchUtils()
         print(("Party last name list before sending to elasticsearch: {}".format(party_last_name_list)))
-        party_case_id_list = esu.scnj_case_list_from_name_list(party_first_name_list, party_last_name_list, 'scnj')
-        party_match = party_match.filter(case_id__in=party_case_id_list)
+        # @TODO: ElasticSearch is inactive so this function was disabled in the meanwhile.
+        # party_case_id_list = esu.scnj_case_list_from_name_list(party_first_name_list, party_last_name_list, 'scnj')
+        # party_match = party_match.filter(case_id__in=party_case_id_list)
         # alt party
-        party_alt_case_id_list = esu.scnj_case_list_from_name_list(party_first_name_list, party_last_name_list, 'scnjalt')
-        party_alt_match = party_alt_match.filter(case_id__in=party_alt_case_id_list)
+        # @TODO: ElasticSearch is inactive so this function was disabled in the meanwhile.
+        # party_alt_case_id_list = esu.scnj_case_list_from_name_list(party_first_name_list, party_last_name_list, 'scnjalt')
+        # party_alt_match = party_alt_match.filter(case_id__in=party_alt_case_id_list)
         return party_match, party_alt_match
 
 

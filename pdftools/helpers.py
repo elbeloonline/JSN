@@ -390,72 +390,74 @@ def replace_docket_common(document: Document, uri, template_name, context):
     # Duplicate creditor tables if needed
     table_index = 0 
     prev_index = 0
-    for table in newdoc.tables:
-        copies = 0
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    if '[CREDITOR]' in paragraph.text or '[CREDITOR_ATTY_FIRST]' in paragraph.text:
-                        if table_index == len(context["CREDITORS"]):
+    if template_name == 'CaseReport':
+        for table in newdoc.tables:
+            copies = 0
+            for row in table.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        if '[CREDITOR]' in paragraph.text or '[CREDITOR_ATTY_FIRST]' in paragraph.text:
+                            if table_index == len(context["CREDITORS"]):
+                                break
+                            if copies == (len(context["CREDITORS"][table_index]) - 1) * 2:
+                                prev_index = table_index
+                                table_index += 1
+                                break
+                            new_tr = deepcopy(row._tr)
+                            table.rows[-1]._tr.addnext(new_tr)
+                            copies += 1
+                            if table_index == len(context["CREDITORS"]):
+                                break
+                            if copies == (len(context["CREDITORS"][table_index]) - 1) * 2:
+                                prev_index = table_index
+                                table_index += 1
+                                break
+                        else:
                             break
-                        if copies == (len(context["CREDITORS"][table_index]) - 1) * 2:
-                            prev_index = table_index
-                            table_index += 1
-                            break
-                        new_tr = deepcopy(row._tr)
-                        table.rows[-1]._tr.addnext(new_tr)
-                        copies += 1
-                        if table_index == len(context["CREDITORS"]):
-                            break
-                        if copies == (len(context["CREDITORS"][table_index]) - 1) * 2:
-                            prev_index = table_index
-                            table_index += 1
-                            break
-                    else:
+                    if table_index == len(context["CREDITORS"]):
+                        break
+                    if copies == (len(context["CREDITORS"][prev_index]) - 1) * 2:
                         break
                 if table_index == len(context["CREDITORS"]):
                     break
-                if copies == (len(context["CREDITORS"][prev_index]) - 1) * 2:
+                if copies == (len(context["CREDITORS"][prev_index]) - 1)  * 2:
                     break
-            if table_index == len(context["CREDITORS"]):
-                break
-            if copies == (len(context["CREDITORS"][prev_index]) - 1)  * 2:
-                break
     
     # Duplicate debtor tables if needed                    
     table_index = 0 
     prev_index = 0
-    for table in newdoc.tables:
-        copies = 0 
-        for row in table.rows:
-            for cell in row.cells:
-                for paragraph in cell.paragraphs:
-                    if '[DEBTOR]' in paragraph.text or '[DEBTOR_STREET_NAME]' in paragraph.text:
-                        if table_index == len(context["DEBTORS"]):
+    if template_name == 'CaseReport':
+        for table in newdoc.tables:
+            copies = 0 
+            for row in table.rows:
+                for cell in row.cells:
+                    for paragraph in cell.paragraphs:
+                        if '[DEBTOR]' in paragraph.text or '[DEBTOR_STREET_NAME]' in paragraph.text:
+                            if table_index == len(context["DEBTORS"]):
+                                break
+                            if copies == (len(context["DEBTORS"][table_index]) - 1) * 2:
+                                prev_index = table_index
+                                table_index += 1
+                                break
+                            new_tr = deepcopy(row._tr)
+                            table.rows[-1]._tr.addnext(new_tr)
+                            copies += 1
+                            if table_index == len(context["DEBTORS"]):
+                                break
+                            if copies == (len(context["DEBTORS"][table_index]) - 1) * 2:
+                                prev_index = table_index
+                                table_index += 1
+                                break
+                        else:
                             break
-                        if copies == (len(context["DEBTORS"][table_index]) - 1) * 2:
-                            prev_index = table_index
-                            table_index += 1
-                            break
-                        new_tr = deepcopy(row._tr)
-                        table.rows[-1]._tr.addnext(new_tr)
-                        copies += 1
-                        if table_index == len(context["DEBTORS"]):
-                            break
-                        if copies == (len(context["DEBTORS"][table_index]) - 1) * 2:
-                            prev_index = table_index
-                            table_index += 1
-                            break
-                    else:
+                    if table_index == len(context["DEBTORS"]):
+                        break
+                    if copies == (len(context["DEBTORS"][prev_index]) - 1) * 2:
                         break
                 if table_index == len(context["DEBTORS"]):
                     break
-                if copies == (len(context["DEBTORS"][prev_index]) - 1) * 2:
-                    break
-            if table_index == len(context["DEBTORS"]):
-                break
-            if copies == (len(context["DEBTORS"][prev_index]) - 1)  * 2:
-                break        
+                if copies == (len(context["DEBTORS"][prev_index]) - 1)  * 2:
+                    break        
 
     for section in newdoc.sections:
         header = section.header
@@ -616,89 +618,90 @@ def replace_docket_common(document: Document, uri, template_name, context):
                         paragraph.text = paragraph.text.replace("[ORIG_DEBT_AMT]", context.get("[ORIG_DEBT_AMT]").pop(0))
                         for run in paragraph.runs:
                             run.font.name = font_name
+                    
+                    if template_name == 'CaseReport':        
+                        if creditor_index < len(context["CREDITORS"]):
+                            creditor = context["CREDITORS"][creditor_index]
                             
-                    if creditor_index < len(context["CREDITORS"]):
-                        creditor = context["CREDITORS"][creditor_index]
-                        
-                        if len(creditor) != 0:
-                            this_creditor = creditor[current_creditor_index]
-                            if "[CREDITOR][PARTY_NAME]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[CREDITOR][PARTY_NAME]", this_creditor["[PARTY_NAME]"], 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_creditor += 1
-                            if "[CREDITOR_STREET_NAME][:if]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[CREDITOR_STREET_NAME][:if]", this_creditor["[CREDITOR_STREET_NAME]"], 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_creditor += 1
-                            if "[ifdebtcomment], [DEBT_COMMENT][:if]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[ifdebtcomment], [DEBT_COMMENT][:if]", this_creditor["[DEBT_COMMENT]"], 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_creditor += 1
-                            if "[CREDITOR_ATTY_FIRST})>0,True,False)] [CREDITOR_ATTY_LAST] [CREDITOR_ATTY_FIRST][else]Pro Se[:if]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[CREDITOR_ATTY_FIRST})>0,True,False)] [CREDITOR_ATTY_LAST] [CREDITOR_ATTY_FIRST][else]Pro Se[:if]", parse_creditor_attorney(document, creditor_index, current_creditor_index, context), 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_creditor += 1
+                            if len(creditor) != 0:
+                                this_creditor = creditor[current_creditor_index]
+                                if "[CREDITOR][PARTY_NAME]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[CREDITOR][PARTY_NAME]", this_creditor["[PARTY_NAME]"], 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_creditor += 1
+                                if "[CREDITOR_STREET_NAME][:if]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[CREDITOR_STREET_NAME][:if]", this_creditor["[CREDITOR_STREET_NAME]"], 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_creditor += 1
+                                if "[ifdebtcomment], [DEBT_COMMENT][:if]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[ifdebtcomment], [DEBT_COMMENT][:if]", this_creditor["[DEBT_COMMENT]"], 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_creditor += 1
+                                if "[CREDITOR_ATTY_FIRST})>0,True,False)] [CREDITOR_ATTY_LAST] [CREDITOR_ATTY_FIRST][else]Pro Se[:if]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[CREDITOR_ATTY_FIRST})>0,True,False)] [CREDITOR_ATTY_LAST] [CREDITOR_ATTY_FIRST][else]Pro Se[:if]", parse_creditor_attorney(document, creditor_index, current_creditor_index, context), 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_creditor += 1
+                                    
+                                if rows_done_creditor == 4:
+                                    current_creditor_index += 1
+                                    rows_done_creditor = 0
+                            if current_creditor_index == len(creditor):
+                                creditor_index += 1
+                                current_creditor_index = 0
                                 
-                            if rows_done_creditor == 4:
-                                current_creditor_index += 1
-                                rows_done_creditor = 0
-                        if current_creditor_index == len(creditor):
-                            creditor_index += 1
-                            current_creditor_index = 0
+                        if debtor_index < len(context["DEBTORS"]):
+                            debtor = context["DEBTORS"][debtor_index]
                             
-                    if debtor_index < len(context["DEBTORS"]):
-                        debtor = context["DEBTORS"][debtor_index]
-                        
-                        if len(debtor) != 0:
-                            this_debtor = debtor[current_debtor_index]
-                            if "[DEBTOR] [PARTY_NAME]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[DEBTOR] [PARTY_NAME]", this_debtor["[PARTY_NAME]"], 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_debtor += 1
-                            if "[DEBTOR_STREET_NAME][else]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[DEBTOR_STREET_NAME][else]", this_debtor["[DEBTOR_STREET_NAME]"], 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_debtor += 1
-                            if "[IF_DOB_PRESENT], [DOB][:if]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[IF_DOB_PRESENT], [DOB][:if]", this_debtor["[DOB]"], 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_debtor += 1
-                            if "[ifaltname]Alternate Name: [PARTY_ALT][PARTY_NAME]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                if len(this_debtor["[PARTY_ALT]"]) > current_debtor_index:
-                                    paragraph.text = paragraph.text.replace("[ifaltname]Alternate Name: [PARTY_ALT][PARTY_NAME]", this_debtor["[PARTY_ALT]"][current_debtor_index], 1)
-                                else:
-                                    paragraph.text = paragraph.text.replace("[ifaltname]Alternate Name: [PARTY_ALT][PARTY_NAME]", "", 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_debtor += 1
-                            if "[DEBTOR_ATTY_FIRST})=NULL(), False, True)][DEBTOR_ATTY_FIRST})>0, True, False)][DEBTOR_ATTY_FIRST] [DEBTOR_ATTY_LAST][else]Pro Se[:if][else]Pro Se[:if]" in paragraph.text:
-                                font_name = paragraph.runs[0].font.name if paragraph.runs else None
-                                paragraph.text = paragraph.text.replace("[DEBTOR_ATTY_FIRST})=NULL(), False, True)][DEBTOR_ATTY_FIRST})>0, True, False)][DEBTOR_ATTY_FIRST] [DEBTOR_ATTY_LAST][else]Pro Se[:if][else]Pro Se[:if]", parse_debtor_attorney(document, debtor_index, current_debtor_index, context), 1)
-                                for run in paragraph.runs:
-                                    run.font.name = font_name
-                                rows_done_debtor += 1
-                            
-                            if rows_done_debtor == 5:
-                                current_debtor_index += 1
-                                rows_done_debtor = 0
-                        if current_debtor_index == len(debtor):
-                            debtor_index += 1
-                            current_debtor_index = 0
+                            if len(debtor) != 0:
+                                this_debtor = debtor[current_debtor_index]
+                                if "[DEBTOR] [PARTY_NAME]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[DEBTOR] [PARTY_NAME]", this_debtor["[PARTY_NAME]"], 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_debtor += 1
+                                if "[DEBTOR_STREET_NAME][else]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[DEBTOR_STREET_NAME][else]", this_debtor["[DEBTOR_STREET_NAME]"], 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_debtor += 1
+                                if "[IF_DOB_PRESENT], [DOB][:if]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[IF_DOB_PRESENT], [DOB][:if]", this_debtor["[DOB]"], 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_debtor += 1
+                                if "[ifaltname]Alternate Name: [PARTY_ALT][PARTY_NAME]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    if len(this_debtor["[PARTY_ALT]"]) > current_debtor_index:
+                                        paragraph.text = paragraph.text.replace("[ifaltname]Alternate Name: [PARTY_ALT][PARTY_NAME]", this_debtor["[PARTY_ALT]"][current_debtor_index], 1)
+                                    else:
+                                        paragraph.text = paragraph.text.replace("[ifaltname]Alternate Name: [PARTY_ALT][PARTY_NAME]", "", 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_debtor += 1
+                                if "[DEBTOR_ATTY_FIRST})=NULL(), False, True)][DEBTOR_ATTY_FIRST})>0, True, False)][DEBTOR_ATTY_FIRST] [DEBTOR_ATTY_LAST][else]Pro Se[:if][else]Pro Se[:if]" in paragraph.text:
+                                    font_name = paragraph.runs[0].font.name if paragraph.runs else None
+                                    paragraph.text = paragraph.text.replace("[DEBTOR_ATTY_FIRST})=NULL(), False, True)][DEBTOR_ATTY_FIRST})>0, True, False)][DEBTOR_ATTY_FIRST] [DEBTOR_ATTY_LAST][else]Pro Se[:if][else]Pro Se[:if]", parse_debtor_attorney(document, debtor_index, current_debtor_index, context), 1)
+                                    for run in paragraph.runs:
+                                        run.font.name = font_name
+                                    rows_done_debtor += 1
+                                
+                                if rows_done_debtor == 5:
+                                    current_debtor_index += 1
+                                    rows_done_debtor = 0
+                            if current_debtor_index == len(debtor):
+                                debtor_index += 1
+                                current_debtor_index = 0
                                 
     for table in newdoc.tables:
         for row in table.rows:
